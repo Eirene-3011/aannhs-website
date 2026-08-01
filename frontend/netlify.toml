@@ -1,11 +1,8 @@
 [build]
-  base    = "garms-website/frontend"
   publish = "dist"
   command = "npm run build"
-
 [build.environment]
   NODE_VERSION = "20"
-
 # Redirect all routes to index.html for React Router (SPA)
 [[redirects]]
   from   = "/*"
