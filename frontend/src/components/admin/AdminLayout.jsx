@@ -19,6 +19,8 @@ const MENU = [
   { path: '/admin/ppas', label: 'Programs (PPAs)', icon: '🎓' },
   { path: '/admin/students', label: "Students' Corner", icon: '⭐' },
   { path: '/admin/accomplishments', label: 'Accomplishments', icon: '🏆' },
+  { path: '/admin/alumni', label: 'Alumni', icon: '🎓' },          // ✅ NEW
+  { path: '/admin/news-updates', label: 'News & Updates', icon: '📰' }, // ✅ NEW
   { path: '/admin/resources', label: 'Learning Resources', icon: '📚' },
   { path: '/admin/issuances', label: 'Issuances', icon: '📢' },
   { path: '/admin/internal-forms', label: 'Internal Forms', icon: '🔒' },
