@@ -14,7 +14,9 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  overflow-y: auto;
+  /* Only the nav scrolls — NOT the whole sidebar.
+     overflow: hidden keeps the header & footer pinned. */
+  overflow: hidden;
   transition: width 0.2s ease, min-width 0.2s ease;
   z-index: 100;
 }
@@ -31,6 +33,7 @@
   padding: 16px 12px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   position: relative;
+  flex-shrink: 0;
 }
 
 .admin-sidebar-logo {
@@ -70,6 +73,11 @@
   flex: 1;
   padding: 8px 0;
   overflow-y: auto;
+  /* min-height: 0 is required for a flex child to actually shrink
+     below its content size and allow overflow-y to kick in.
+     Without this the nav would grow past 100vh and push the footer
+     out of view, creating the blank space below Logout. */
+  min-height: 0;
 }
 
 .admin-nav-item {
@@ -107,6 +115,7 @@
 .admin-sidebar-footer {
   border-top: 1px solid rgba(255,255,255,0.08);
   padding: 8px 0;
+  flex-shrink: 0;
 }
 
 .admin-logout { color: var(--gray-400); }
