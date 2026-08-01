@@ -55,10 +55,13 @@ app.use('/api/internal-forms',                    require('./routes/internalForm
 app.use('/api/upload',                            require('./routes/upload'));
 app.use('/api/enrollment-stats',                  require('./routes/enrollmentStats'));
 app.use('/api/feedback',                          require('./routes/feedback'));
-// New routes
+// Existing new routes
 app.use('/api/school-dashboard',                  require('./routes/schoolDashboard'));
 app.use('/api/accomplishments',                   require('./routes/accomplishments'));
 app.use('/api/school-heads',                      require('./routes/schoolHeads'));
+// ✅ NEW: Alumni & News
+app.use('/api/alumni',                            require('./routes/alumni'));
+app.use('/api/news-updates',                      require('./routes/newsAndUpdates'));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', app: 'AANNHS API' }));
