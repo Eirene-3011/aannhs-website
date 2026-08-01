@@ -51,6 +51,9 @@ import AdminEnrollmentStats from './pages/admin/AdminEnrollmentStats';
 import AdminSchoolDashboard from './pages/admin/AdminSchoolDashboard';
 import AdminAccomplishments from './pages/admin/AdminAccomplishments';
 import AdminSchoolHeads from './pages/admin/AdminSchoolHeads';
+// ✅ NEW
+import AdminAlumni from './pages/admin/AdminAlumni';
+import AdminNewsAndUpdates from './pages/admin/AdminNewsAndUpdates';
 import RequireAuth from './components/admin/RequireAuth';
 
 export default function App() {
@@ -109,6 +112,9 @@ export default function App() {
           <Route path="external-links" element={<AdminExternalLinks />} />
           <Route path="school-dashboard" element={<AdminSchoolDashboard />} />
           <Route path="school-heads" element={<AdminSchoolHeads />} />
+          {/* ✅ NEW */}
+          <Route path="alumni" element={<AdminAlumni />} />
+          <Route path="news-updates" element={<AdminNewsAndUpdates />} />
         </Route>
       </Routes>
     </BrowserRouter>
