@@ -4,18 +4,22 @@
   background: var(--gray-50);
 }
 
-/* Sidebar */
+/* ── Sidebar ──────────────────────────────────────────────────────────
+   position: fixed keeps the sidebar always covering the full viewport
+   height — no sticky/height-mismatch gap ever appears below Logout.
+   The sidebar never "ends" before the page does.
+─────────────────────────────────────────────────────────────────────── */
 .admin-sidebar {
   width: 240px;
   min-width: 240px;
   background: var(--gray-900);
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: 0;
   height: 100vh;
-  /* Only the nav scrolls — NOT the whole sidebar.
-     overflow: hidden keeps the header & footer pinned. */
+  /* Only the nav section scrolls — header & footer stay pinned */
   overflow: hidden;
   transition: width 0.2s ease, min-width 0.2s ease;
   z-index: 100;
@@ -26,6 +30,20 @@
   min-width: 64px;
 }
 
+/* ── Main content — offset to match the fixed sidebar ─────────────── */
+.admin-main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  margin-left: 240px;
+  transition: margin-left 0.2s ease;
+}
+
+.admin-layout.sidebar-collapsed .admin-main {
+  margin-left: 64px;
+}
+
+/* ── Sidebar header ───────────────────────────────────────────────── */
 .admin-sidebar-header {
   display: flex;
   align-items: center;
@@ -69,14 +87,13 @@
 
 .sidebar-toggle:hover { background: rgba(255,255,255,0.1); }
 
+/* ── Nav — scrolls within the fixed sidebar ──────────────────────── */
 .admin-nav {
   flex: 1;
   padding: 8px 0;
   overflow-y: auto;
-  /* min-height: 0 is required for a flex child to actually shrink
-     below its content size and allow overflow-y to kick in.
-     Without this the nav would grow past 100vh and push the footer
-     out of view, creating the blank space below Logout. */
+  /* min-height: 0 lets the flex child shrink below content size
+     so overflow-y actually activates */
   min-height: 0;
 }
 
@@ -112,6 +129,7 @@
 .nav-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
 .nav-label { overflow: hidden; text-overflow: ellipsis; }
 
+/* ── Footer — always pinned at bottom of the fixed sidebar ────────── */
 .admin-sidebar-footer {
   border-top: 1px solid rgba(255,255,255,0.08);
   padding: 8px 0;
@@ -121,14 +139,7 @@
 .admin-logout { color: var(--gray-400); }
 .admin-logout:hover { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
 
-/* Main content area */
-.admin-main {
-  flex: 1;
-  min-width: 0;
-  overflow-x: hidden;
-}
-
-/* Admin page wrapper */
+/* ── Admin page wrapper ───────────────────────────────────────────── */
 .admin-page {
   padding: 32px;
   max-width: 1200px;
@@ -155,7 +166,7 @@
   margin-top: 2px;
 }
 
-/* Admin cards */
+/* ── Admin cards ──────────────────────────────────────────────────── */
 .admin-card {
   background: var(--white);
   border-radius: var(--radius-lg);
@@ -173,7 +184,7 @@
   border-bottom: 1px solid var(--gray-100);
 }
 
-/* Form actions */
+/* ── Form actions ─────────────────────────────────────────────────── */
 .form-actions {
   display: flex;
   gap: 12px;
@@ -181,13 +192,15 @@
   flex-wrap: wrap;
 }
 
-/* Responsive */
+/* ── Responsive ───────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .admin-sidebar {
-    position: fixed;
     left: -240px;
-    transition: left 0.3s ease;
+    transition: left 0.3s ease, width 0.2s ease;
   }
   .admin-sidebar.open { left: 0; }
+  .admin-main {
+    margin-left: 0;
+  }
   .admin-page { padding: 20px; }
 }
