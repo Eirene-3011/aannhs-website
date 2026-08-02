@@ -24,12 +24,6 @@ const SparkleIcon = (p) => (
   </svg>
 );
 
-const CheckIcon = (p) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" {...p}>
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
-);
-
 /* ─── Navigation data ───────────────────────────────────────────────── */
 const NAV_ITEMS = [
   { label: 'Home', path: '/' },
@@ -206,17 +200,12 @@ export default function Header() {
           <div className="container masthead-row">
             <div className="masthead-plaque">
               {info?.logo_url && (
-                <div className="masthead-logo-wrap">
-                  <img
-                    src={getImageUrl(info.logo_url)}
-                    alt="School Logo"
-                    className="masthead-logo"
-                    onError={(e) => { e.target.style.display = 'none'; }}
-                  />
-                  <span className="masthead-logo-badge" title="DepEd Recognized">
-                    <CheckIcon className="masthead-logo-badge-icon" />
-                  </span>
-                </div>
+                <img
+                  src={getImageUrl(info.logo_url)}
+                  alt="School Logo"
+                  className="masthead-logo"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
               )}
               <div className="masthead-copy">
                 {banner?.title && (
