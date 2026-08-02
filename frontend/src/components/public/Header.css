@@ -76,7 +76,7 @@
   position: relative;
   height: var(--masthead-height);
   overflow: hidden;
-  background: linear-gradient(155deg, var(--blue-dark) 0%, var(--blue-primary) 100%);
+  background: linear-gradient(150deg, var(--blue-dark) 0%, var(--blue-primary) 62%, #1a6fc4 100%);
   display: flex;
   align-items: center;
 }
@@ -124,16 +124,43 @@
   /* soft green glow, echoes the homepage hero-panel-glow without copying it verbatim */
   content: '';
   position: absolute;
-  top: -60%;
-  right: -6%;
-  width: 260px;
-  height: 260px;
+  top: -65%;
+  right: -4%;
+  width: 300px;
+  height: 300px;
   border-radius: 50%;
   background: var(--green-light);
-  opacity: 0.16;
-  filter: blur(80px);
+  opacity: 0.22;
+  filter: blur(75px);
   pointer-events: none;
   z-index: 0;
+}
+
+.masthead::before {
+  /* second, quieter glow bottom-left for depth */
+  content: '';
+  position: absolute;
+  bottom: -80%;
+  left: -4%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0.14;
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.masthead-seam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  z-index: 3;
+  background: linear-gradient(90deg, var(--blue-dark) 0%, var(--green-light) 50%, var(--blue-dark) 100%);
+  box-shadow: 0 0 12px rgba(67, 160, 71, 0.55);
 }
 
 .masthead-row {
@@ -153,16 +180,43 @@
   min-width: 0;
 }
 
-.masthead-logo {
+.masthead-logo-wrap {
+  position: relative;
+  flex-shrink: 0;
   width: 60px;
   height: 60px;
-  flex-shrink: 0;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(155deg, var(--green-light) 0%, rgba(255, 255, 255, 0.3) 100%);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+}
+
+.masthead-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   border-radius: 50%;
   background: var(--white);
-  padding: 7px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  padding: 6px;
 }
+
+.masthead-logo-badge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--green-light);
+  border: 2px solid var(--blue-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.masthead-logo-badge-icon { width: 10px; height: 10px; color: var(--white); }
 
 .masthead-copy {
   display: flex;
@@ -178,10 +232,10 @@
   align-self: flex-start;
   padding: 3px 11px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(67, 160, 71, 0.22);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: var(--white);
+  border: 1px solid rgba(129, 209, 133, 0.45);
+  color: #d6f5d8;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -240,16 +294,16 @@
 }
 
 .btn-primary {
-  background: var(--white);
-  color: var(--blue-dark);
-  border-color: var(--white);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, var(--green-light) 0%, var(--green) 100%);
+  color: var(--white);
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.45);
 }
 
 .btn-primary:hover {
-  background: var(--off-white);
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 10px 24px rgba(46, 125, 50, 0.55);
+  filter: brightness(1.05);
 }
 
 .btn-ghost {
@@ -259,9 +313,9 @@
 }
 
 .btn-ghost:hover {
-  border-color: var(--white);
+  border-color: var(--green-light);
   color: var(--white);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(67, 160, 71, 0.14);
 }
 
 .btn-icon { width: 15px; height: 15px; transition: transform var(--dur-normal) var(--ease-in-out); }
@@ -324,6 +378,20 @@
   outline: none;
 }
 
+.n-link::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 4px;
+  right: 4px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-in-out);
+  z-index: -1;
+}
+
 .n-link::after {
   content: '';
   position: absolute;
@@ -333,12 +401,14 @@
   height: 2.5px;
   background: var(--green-light);
   border-radius: 1.5px;
+  box-shadow: 0 0 8px rgba(67, 160, 71, 0.7);
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform var(--dur-normal) var(--ease-out);
 }
 
 .n-link:hover { color: var(--white); }
+.n-link:hover::before { opacity: 1; }
 .n-link:hover::after,
 .n-link.is-active::after { transform: scaleX(1); }
 .n-link.is-active { color: var(--white); font-weight: 700; }
@@ -422,8 +492,12 @@
   flex-shrink: 0;
 }
 
-.dd-item:hover { background: var(--off-white); color: var(--blue-dark); }
-.dd-item:hover .dd-item-arrow { opacity: 1; transform: translateX(0); color: var(--blue-primary); }
+.dd-item {
+  border-left: 2.5px solid transparent;
+}
+
+.dd-item:hover { background: var(--off-white); color: var(--blue-dark); border-left-color: var(--green-light); }
+.dd-item:hover .dd-item-arrow { opacity: 1; transform: translateX(0); color: var(--green); }
 
 /* ── Hamburger ─────────────────────────────────────────────────────── */
 .hamburger-btn {
@@ -486,7 +560,9 @@
   .n-link { padding: 0 10px; font-size: 0.74rem; }
   .n-link::after { left: 10px; right: 10px; }
   :root { --masthead-height: 118px; }
-  .masthead-logo { width: 52px; height: 52px; }
+  .masthead-logo-wrap { width: 52px; height: 52px; }
+  .masthead-logo-badge { width: 16px; height: 16px; }
+  .masthead-logo-badge-icon { width: 8px; height: 8px; }
   .masthead-sub { display: none; }
 }
 
@@ -562,6 +638,7 @@
     color: rgba(255, 255, 255, 0.78);
     padding: 12px 24px 12px 30px;
     border-radius: 0;
+    border-left: none;
     font-size: 0.82rem;
     font-weight: 400;
     letter-spacing: 0.01em;
@@ -569,7 +646,7 @@
   }
 
   .dd-item:last-child { border-bottom: none; }
-  .dd-item:hover { background: rgba(255, 255, 255, 0.07); color: var(--white); }
+  .dd-item:hover { background: rgba(255, 255, 255, 0.07); color: var(--white); border-left: none; }
   .dd-item .dd-item-arrow { color: rgba(255, 255, 255, 0.3); opacity: 0.6; transform: none; }
   .dd-item:hover .dd-item-arrow { opacity: 1; color: var(--green-light); }
 
@@ -580,7 +657,9 @@
   .container { padding: 0 16px; }
   :root { --masthead-height: 92px; }
 
-  .masthead-logo { width: 44px; height: 44px; padding: 5px; }
+  .masthead-logo-wrap { width: 44px; height: 44px; padding: 2px; }
+  .masthead-logo-badge { width: 14px; height: 14px; border-width: 1.5px; }
+  .masthead-logo-badge-icon { width: 7px; height: 7px; }
   .masthead-heading { font-size: clamp(0.92rem, 4.6vw, 1.05rem); }
   .masthead-tag { display: none; }
   .masthead-plaque { gap: 12px; }
@@ -596,7 +675,8 @@
 }
 
 @media (max-width: 380px) {
-  .masthead-logo { width: 38px; height: 38px; }
+  .masthead-logo-wrap { width: 38px; height: 38px; }
+  .masthead-logo-badge { display: none; }
   .masthead-heading { font-size: 0.85rem; }
   .nav-links { width: 260px; }
   .n-link { padding: 13px 18px; font-size: 0.8rem; }
