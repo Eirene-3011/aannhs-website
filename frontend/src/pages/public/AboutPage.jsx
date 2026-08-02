@@ -129,15 +129,12 @@ export default function AboutPage() {
 
   return (
     <div ref={revealScope}>
-      {/* Hero — subtitle/tagline removed per revision; only the page title remains */}
+      {/* Hero */}
       <div className="page-header">
-        <span className="hero-monogram" aria-hidden="true">G</span>
         <div className="container">
           <h1>About AANNHS</h1>
         </div>
       </div>
-
-
 
       {/* School Profile: sidebar table of contents + section cards */}
       <section className="section">
