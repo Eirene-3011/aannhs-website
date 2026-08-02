@@ -368,7 +368,7 @@ export default function HomePage() {
             <span className="hero-badge-pill">Public Secondary School</span>
             <span className="hero-badge-pill hero-badge-pill-gold">DepEd Recognized</span>
           </div>
-          <h1 className="hero-headline">Agapito A. Nasol National High School</h1>
+          <h1 className="hero-headline">Andres A. Nocon National High School</h1>
           <p className="hero-tagline">Guiding every learner toward academic excellence, character, and community — one school year at a time.</p>
           <div className="hero-panel-actions">
             <Link to="/admissions" className="btn btn-primary">
