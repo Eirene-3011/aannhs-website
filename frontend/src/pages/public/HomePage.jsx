@@ -114,15 +114,13 @@ const PieChartIcon = (p) => (
   </svg>
 );
 
-/* Quick link "file codes" — a nod to the registrar's index-tab system,
-   each one a short abbreviation for the section it opens. */
 const QUICK_LINKS = [
-  { label: 'About AANNHS', desc: 'School profile & history', path: '/about', Icon: SchoolIcon, accent: 'blue', code: 'INFO' },
-  { label: 'Admissions', desc: 'Enrollment information', path: '/admissions', Icon: ClipboardIcon, accent: 'blue', code: 'ADM' },
-  { label: 'Programs & Activities', desc: 'PPAs and events', path: '/ppas', Icon: GraduationIcon, accent: 'green', code: 'PPA' },
-  { label: 'Accomplishments', desc: 'Awards & achievements', path: '/accomplishments', Icon: TrophyIcon, accent: 'purple', code: 'AWD' },
-  { label: "Students' Corner", desc: 'Featured students', path: '/students-corner', Icon: StarIcon, accent: 'orange', code: 'STU' },
-  { label: 'Contact Us', desc: 'Get in touch', path: '/contact', Icon: PhoneIcon, accent: 'teal', code: 'CTC' },
+  { label: 'About AANNHS', desc: 'School profile & history', path: '/about', Icon: SchoolIcon, accent: 'blue' },
+  { label: 'Admissions', desc: 'Enrollment information', path: '/admissions', Icon: ClipboardIcon, accent: 'blue' },
+  { label: 'Programs & Activities', desc: 'PPAs and events', path: '/ppas', Icon: GraduationIcon, accent: 'green' },
+  { label: 'Accomplishments', desc: 'Awards & achievements', path: '/accomplishments', Icon: TrophyIcon, accent: 'purple' },
+  { label: "Students' Corner", desc: 'Featured students', path: '/students-corner', Icon: StarIcon, accent: 'orange' },
+  { label: 'Contact Us', desc: 'Get in touch', path: '/contact', Icon: PhoneIcon, accent: 'teal' },
 ];
 
 const DASH_ICONS = [
@@ -236,13 +234,13 @@ function DonutChart({ data, animate, size = 200 }) {
       {/* Animated segments */}
       {segments}
       {/* Center text */}
-      <text x={cx} y={cy - 8} textAnchor="middle" className="donut-center-num" fill="var(--gray-900)" fontFamily="var(--font-mono)" fontSize="22" fontWeight="700">{total.toLocaleString()}</text>
-      <text x={cx} y={cy + 14} textAnchor="middle" className="donut-center-label" fill="var(--gray-500)" fontFamily="var(--font-mono)" fontSize="10" fontWeight="600">TOTAL</text>
+      <text x={cx} y={cy - 8} textAnchor="middle" className="donut-center-num" fill="var(--gray-900)" fontSize="22" fontWeight="800">{total.toLocaleString()}</text>
+      <text x={cx} y={cy + 14} textAnchor="middle" className="donut-center-label" fill="var(--gray-500)" fontSize="10" fontWeight="600">TOTAL</text>
     </svg>
   );
 }
 
-/* ─── Horizontal Bar Chart ────────────────────────────────────────────── */
+/* ─── Horizontal Bar Chart (Replaced) ────────────────────────────────── */
 function HorizontalBarChart({ data, animate }) {
   if (!data || data.length === 0) return null;
   const maxVal = Math.max(...data.flatMap(d => [d.sections, d.classrooms]), 1);
@@ -265,18 +263,18 @@ function HorizontalBarChart({ data, animate }) {
               <div className="row-label">{d.name}</div>
               <div className="row-bars-container">
                 <div className="horizontal-bar-group">
-                  <div
-                    className="h-bar h-bar-sections"
-                    style={{
+                  <div 
+                    className="h-bar h-bar-sections" 
+                    style={{ 
                       width: animate ? `${secW}%` : '0%',
                       transitionDelay: `${i * 0.05}s`
                     }}
                   >
                     <span className="h-bar-value">{d.sections}</span>
                   </div>
-                  <div
-                    className="h-bar h-bar-classrooms"
-                    style={{
+                  <div 
+                    className="h-bar h-bar-classrooms" 
+                    style={{ 
                       width: animate ? `${clsW}%` : '0%',
                       transitionDelay: `${i * 0.05 + 0.1}s`
                     }}
@@ -400,6 +398,8 @@ export default function HomePage() {
             {/* Vignette overlay for cinematic depth */}
             <div className="hero-vignette" />
 
+            {/* Hero content overlay removed as requested */}
+
             {banners.length > 1 && (
               <>
                 <button className="hero-nav hero-nav-prev" onClick={prevBanner} aria-label="Previous banner"><ChevronLeftIcon /></button>
@@ -424,20 +424,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* ─── Nameplate — index card bridging the hero into the page ───── */}
-      <div className="hero-nameplate-wrap">
-        <div className="container">
-          <div className="hero-nameplate card-cut">
-            <span className="hero-nameplate-tab">Official School Portal</span>
-            <h1 className="hero-nameplate-title">AANNHS</h1>
-            <p className="hero-nameplate-sub">
-              Quality public secondary education, rooted in community and committed to every learner's growth.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Perforated divider */}
+      {/* Ribbon divider */}
       <div className="ribbon-divider" aria-hidden="true" />
 
       {/* ============================================================
@@ -469,10 +456,12 @@ export default function HomePage() {
                 {dashItems.map((item, i) => {
                   const { Icon, accent } = DASH_ICONS[i];
                   return (
-                    <div key={item.label} className={`kpi-card card-cut accent-${accent}`}>
+                    <div key={item.label} className={`kpi-card accent-${accent}`}>
+                      <div className="kpi-glow" />
                       <div className="kpi-icon-wrap"><Icon className="kpi-icon" /></div>
                       <KpiValue value={item.value} start={dashInView} small={item.small} />
                       <p className="kpi-label">{item.label}</p>
+                      <div className="kpi-hover-shine" />
                     </div>
                   );
                 })}
@@ -509,7 +498,7 @@ export default function HomePage() {
                   <div className="charts-header-left">
                     <div className="charts-header-row">
                       <span className="section-eyebrow">Visual Insights</span>
-                      <h3 className="charts-title">Enrollment &amp; Personnel Analytics</h3>
+                      <h3 className="charts-title">Enrollment & Personnel Analytics</h3>
                     </div>
                     <p className="charts-subtitle">Grade-level distribution and staff composition at a glance.</p>
                   </div>
@@ -521,7 +510,7 @@ export default function HomePage() {
 
                 <div className="charts-grid">
                   {/* Horizontal Bar Chart — Grade-Level Breakdown */}
-                  <div className="chart-card card-cut chart-card-lg">
+                  <div className="chart-card chart-card-lg">
                     <div className="chart-card-header">
                       <div className="chart-card-title-wrap">
                         <CalendarIcon className="chart-card-icon" />
@@ -544,7 +533,7 @@ export default function HomePage() {
                   </div>
 
                   {/* Donut Pie Chart — Personnel Distribution */}
-                  <div className="chart-card card-cut chart-card-sm">
+                  <div className="chart-card chart-card-sm">
                     <div className="chart-card-header">
                       <div className="chart-card-title-wrap">
                         <PieChartIcon className="chart-card-icon" />
@@ -595,9 +584,8 @@ export default function HomePage() {
             <span className="title-accent title-accent-center" aria-hidden="true" />
           </div>
           <div className={`quick-links-grid${quickInView ? ' in-view' : ''}`}>
-            {QUICK_LINKS.map(({ label, desc, path, Icon, accent, code }) => (
-              <Link key={label} to={path} className={`quick-link-card card-cut accent-${accent}`}>
-                <span className="ql-tab-code">{code}</span>
+            {QUICK_LINKS.map(({ label, desc, path, Icon, accent }) => (
+              <Link key={label} to={path} className={`quick-link-card accent-${accent}`}>
                 <div className="ql-card-inner">
                   <div className="ql-icon-wrap"><Icon className="ql-icon" /></div>
                   <div className="ql-body">
@@ -608,6 +596,7 @@ export default function HomePage() {
                     <ArrowRightIcon className="ql-arrow" />
                   </div>
                 </div>
+                <div className="ql-hover-gradient" />
               </Link>
             ))}
           </div>
@@ -635,7 +624,7 @@ export default function HomePage() {
             </div>
             <div className={`ppas-grid${ppaInView ? ' in-view' : ''}`}>
               {ppas.map(p => (
-                <div key={p.id} className="ppa-card card-cut">
+                <div key={p.id} className="ppa-card">
                   {p.image_url && (
                     <div className="ppa-image-wrap">
                       <img src={getImageUrl(p.image_url)} alt={p.name} className="ppa-image" onError={e => e.target.style.display = 'none'} />
@@ -649,6 +638,7 @@ export default function HomePage() {
                       <ArrowRightIcon className="ppa-link-icon" />
                     </Link>
                   </div>
+                  <div className="ppa-shine" />
                 </div>
               ))}
             </div>
@@ -657,7 +647,7 @@ export default function HomePage() {
       )}
 
       {/* ============================================================
-          CTA
+          CTA — with animated gradient background
           ============================================================ */}
       <section className="cta-section" ref={ctaRef}>
         <div className="cta-pattern" />
