@@ -5,7 +5,7 @@ import api from '../../utils/api';
 import { getImageUrl } from '../../utils/helpers';
 import './Header.css';
 
-// ─── Icons ────────────────────────────────────────────────────────────────
+/* ─── Icons ─────────────────────────────────────────────────────────── */
 const ChevronDownIcon = (p) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...p}>
     <polyline points="6 9 12 15 18 9" />
@@ -24,7 +24,7 @@ const SparkleIcon = (p) => (
   </svg>
 );
 
-// ─── Navigation Data ──────────────────────────────────────────────────────
+/* ─── Navigation data ───────────────────────────────────────────────── */
 const NAV_ITEMS = [
   { label: 'Home', path: '/' },
   {
@@ -68,70 +68,50 @@ const NAV_ITEMS = [
   },
 ];
 
-// ─── Desktop Dropdown Item ────────────────────────────────────────────────
-function DesktopDropdownItem({ child, onNavigate }) {
-  return (
-    <Link
-      to={child.path}
-      className="dd-item"
-      onClick={onNavigate}
-    >
-      <span className="dd-item-label">{child.label}</span>
-      <ArrowRightIcon className="dd-item-arrow" />
-    </Link>
-  );
-}
-
-// ─── Desktop Nav Item ─────────────────────────────────────────────────────
-function DesktopNavItem({ item, location, onNavigate }) {
-  const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-  const [isOpen, setIsOpen] = useState(false);
-  const timerRef = useRef(null);
-
-  const open = useCallback(() => {
-    if (item.children) {
-      clearTimeout(timerRef.current);
-      setIsOpen(true);
-    }
-  }, [item.children]);
-
-  const close = useCallback(() => {
-    if (item.children) {
-      timerRef.current = setTimeout(() => setIsOpen(false), 120);
-    }
-  }, [item.children]);
-
-  useEffect(() => () => clearTimeout(timerRef.current), []);
+/* ─── Single nav item (desktop opens on hover via CSS, mobile via click) ── */
+function NavItem({ item, isActivePath, isOpen, onToggle, onNavigate }) {
+  const hasChildren = !!item.children;
 
   return (
-    <div className="n-item" onMouseEnter={open} onMouseLeave={close}>
-      <Link
-        to={item.path}
-        className={`n-link${isActive ? ' is-active' : ''}`}
-        onClick={() => { if (!item.children) onNavigate(); }}
-        aria-haspopup={item.children ? "true" : "false"}
-        aria-expanded={item.children && isOpen ? "true" : "false"}
-      >
-        <span>{item.label}</span>
-        {item.children && <ChevronDownIcon className="n-caret" />}
-      </Link>
-
-      {item.children && (
-        <div className={`n-dropdown${isOpen ? ' is-open' : ''}`}
-          onMouseEnter={open}
-          onMouseLeave={close}
+    <div className={`n-item${hasChildren ? ' has-children' : ''}${isOpen ? ' is-open' : ''}`}>
+      {hasChildren ? (
+        <button
+          type="button"
+          className={`n-link n-trigger${isActivePath ? ' is-active' : ''}`}
+          onClick={() => onToggle(item.label)}
+          aria-haspopup="true"
+          aria-expanded={isOpen}
         >
+          <span>{item.label}</span>
+          <ChevronDownIcon className={`n-caret${isOpen ? ' is-flipped' : ''}`} />
+        </button>
+      ) : (
+        <Link
+          to={item.path}
+          className={`n-link${isActivePath ? ' is-active' : ''}`}
+          onClick={onNavigate}
+        >
+          <span>{item.label}</span>
+        </Link>
+      )}
+
+      {hasChildren && (
+        <div className={`n-dropdown${isOpen ? ' is-open' : ''}`}>
           <div className="dd-wrap">
             <div className="dd-header">
               <span className="dd-header-label">{item.label}</span>
               <span className="dd-header-line" />
             </div>
             {item.children.map((child) => (
-              <DesktopDropdownItem
+              <Link
                 key={child.label}
-                child={child}
-                onNavigate={() => { setIsOpen(false); onNavigate(); }}
-              />
+                to={child.path}
+                className="dd-item"
+                onClick={onNavigate}
+              >
+                <span className="dd-item-label">{child.label}</span>
+                <ArrowRightIcon className="dd-item-arrow" />
+              </Link>
             ))}
           </div>
         </div>
@@ -140,17 +120,16 @@ function DesktopNavItem({ item, location, onNavigate }) {
   );
 }
 
-// ─── Main Header ──────────────────────────────────────────────────────────
+/* ─── Header ────────────────────────────────────────────────────────── */
 export default function Header() {
   const { info } = useSchoolInfo();
   const location = useLocation();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState({});
+  const [openSection, setOpenSection] = useState(null);
   const navRef = useRef(null);
 
-  // Banner
   const [banner, setBanner] = useState(null);
   const [bannerLoading, setBannerLoading] = useState(true);
 
@@ -166,189 +145,117 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
     setMenuOpen(false);
-    setMobileOpen({});
+    setOpenSection(null);
   }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
-        setMobileOpen({});
+        setOpenSection(null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-  const closeMenu = () => setMenuOpen(false);
-  const toggleMobileSection = (label) =>
-    setMobileOpen((prev) => ({ ...prev, [label]: !prev[label] }));
+  const toggleMenu = () => setMenuOpen((v) => !v);
+  const closeMenu = useCallback(() => { setMenuOpen(false); setOpenSection(null); }, []);
+  const toggleSection = (label) => setOpenSection((prev) => (prev === label ? null : label));
+
+  const schoolName = info?.school_name || 'Andres A. Nocon National High School';
+  const motto = info?.motto || 'Raising Character, Reaching Excellence';
 
   return (
     <>
-      {/* ── Hero Section ─────────────────────────────────────────────── */}
+      {/* ── Hero: framed image + floating identity card ─────────────── */}
       <div className="header-hero">
-        {bannerLoading ? (
-          <div className="hero-skeleton" aria-hidden="true" />
-        ) : banner ? (
-          <div className="hero-frame">
+        <div className="hero-canvas">
+          {bannerLoading ? (
+            <div className="hero-skeleton" aria-hidden="true" />
+          ) : banner ? (
             <img
               src={getImageUrl(banner.image_url)}
               alt={banner.title || ''}
               className="hero-img"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
-            <div className="hero-overlay" />
-            <div className="hero-inner container">
-              {info?.logo_url && (
-                <div className="hero-brand">
-                  <img
-                    src={getImageUrl(info.logo_url)}
-                    alt="AANNHS Logo"
-                    className="hero-logo"
-                    onError={(e) => { e.target.style.display = 'none'; }}
-                  />
-                </div>
-              )}
-              <div className="hero-copy">
-                {banner.title && (
-                  <span className="hero-tag">
-                    <SparkleIcon className="hero-tag-icon" />
-                    {banner.title}
-                  </span>
-                )}
-                <h1 className="hero-heading">
-                  {info?.school_name || 'Andres A. Nocon National High School'}
-                </h1>
-                <p className="hero-sub">
-                  {info?.motto || 'Raising Character, Reaching Excellence'}
-                </p>
-                <div className="hero-cta">
-                  <Link to="/admissions" className="cta-primary">
-                    Enroll Now
-                    <ArrowRightIcon className="cta-icon" />
-                  </Link>
-                  <Link to="/about" className="cta-ghost">
-                    Learn More
-                  </Link>
-                </div>
-              </div>
+          ) : (
+            <div className="hero-fallback" aria-hidden="true">
+              <div className="hero-pattern" />
             </div>
-          </div>
-        ) : (
-          <div className="hero-fallback" aria-hidden="true">
-            <div className="hero-pattern" />
-            <div className="hero-inner container">
-              {info?.logo_url && (
-                <div className="hero-brand">
-                  <img
-                    src={getImageUrl(info.logo_url)}
-                    alt="AANNHS Logo"
-                    className="hero-logo"
-                    onError={(e) => { e.target.style.display = 'none'; }}
-                  />
-                </div>
-              )}
-              <div className="hero-copy">
+          )}
+          <div className="hero-canvas-shade" />
+        </div>
+
+        <div className="hero-card-row container">
+          <div className="hero-card">
+            {info?.logo_url && (
+              <div className="hero-brand">
+                <img
+                  src={getImageUrl(info.logo_url)}
+                  alt="School Logo"
+                  className="hero-logo"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              </div>
+            )}
+
+            <div className="hero-copy">
+              {banner?.title && (
                 <span className="hero-tag">
                   <SparkleIcon className="hero-tag-icon" />
-                  Welcome to AANNHS
+                  {banner.title}
                 </span>
-                <h1 className="hero-heading">
-                  {info?.school_name || 'Andres A. Nocon National High School'}
-                </h1>
-                <p className="hero-sub">
-                  {info?.motto || 'Raising Character, Reaching Excellence'}
-                </p>
-                <div className="hero-cta">
-                  <Link to="/admissions" className="cta-primary">
-                    Enroll Now
-                    <ArrowRightIcon className="cta-icon" />
-                  </Link>
-                  <Link to="/about" className="cta-ghost">
-                    Learn More
-                  </Link>
-                </div>
-              </div>
+              )}
+              <h1 className="hero-heading">{schoolName}</h1>
+              <p className="hero-sub">{motto}</p>
+            </div>
+
+            <div className="hero-cta">
+              <Link to="/admissions" className="btn btn-primary">
+                <span>Enroll Now</span>
+                <ArrowRightIcon className="btn-icon" />
+              </Link>
+              <Link to="/about" className="btn btn-outline">
+                Learn More
+              </Link>
             </div>
           </div>
-        )}
-
-        {/* Decorative bottom edge */}
-        <div className="hero-edge" />
+        </div>
       </div>
 
-      {/* ── Sticky Navigation ────────────────────────────────────────── */}
+      {/* ── Sticky navigation ────────────────────────────────────────── */}
       <nav className={`nav-bar${scrolled ? ' is-sticky' : ''}`} ref={navRef}>
         <div className="container nav-row">
-          {/* Desktop nav links */}
           <div className={`nav-links${menuOpen ? ' is-mobile-open' : ''}`}>
             {NAV_ITEMS.map((item) => {
-              // Desktop: always render DesktopNavItem
-              // Mobile: split into triggers and dropdowns handled separately
+              const isActivePath = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
               return (
-                <div key={item.label} className="n-item mobile-item">
-                  {item.children ? (
-                    <>
-                      <button
-                        className={`n-link n-trigger${
-                          location.pathname === item.path || location.pathname.startsWith(item.path + '/')
-                            ? ' is-active'
-                            : ''
-                        }`}
-                        onClick={() => toggleMobileSection(item.label)}
-                        aria-haspopup="true"
-                        aria-expanded={mobileOpen[item.label] ? "true" : "false"}
-                      >
-                        <span>{item.label}</span>
-                        <ChevronDownIcon className={`n-caret${mobileOpen[item.label] ? ' is-flipped' : ''}`} />
-                      </button>
-                      <div className={`n-dropdown mobile-dropdown${mobileOpen[item.label] ? ' is-open' : ''}`}>
-                        <div className="dd-wrap mobile-dd">
-                          {item.children.map((child) => (
-                            <Link
-                              key={child.label}
-                              to={child.path}
-                              className="dd-item mobile-dd-item"
-                              onClick={closeMenu}
-                            >
-                              <span className="dd-item-label">{child.label}</span>
-                              <ArrowRightIcon className="dd-item-arrow" />
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <Link
-                      to={item.path}
-                      className={`n-link${
-                        location.pathname === item.path || location.pathname.startsWith(item.path + '/')
-                          ? ' is-active'
-                          : ''
-                      }`}
-                      onClick={closeMenu}
-                    >
-                      <span>{item.label}</span>
-                    </Link>
-                  )}
-                </div>
+                <NavItem
+                  key={item.label}
+                  item={item}
+                  isActivePath={isActivePath}
+                  isOpen={openSection === item.label}
+                  onToggle={toggleSection}
+                  onNavigate={closeMenu}
+                />
               );
             })}
           </div>
 
-          {/* Hamburger */}
           <button
             className={`hamburger-btn${menuOpen ? ' is-active' : ''}`}
             onClick={toggleMenu}
             aria-label="Toggle navigation menu"
+            aria-expanded={menuOpen}
           >
             <span className="h-line h-line-1" />
             <span className="h-line h-line-2" />
@@ -357,7 +264,6 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile backdrop */}
       {menuOpen && <div className="mobile-backdrop" onClick={toggleMenu} />}
     </>
   );
