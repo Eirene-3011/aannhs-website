@@ -70,8 +70,8 @@
 .hero-canvas {
   position: relative;
   width: 100%;
-  aspect-ratio: 20 / 7;
-  max-height: 420px;
+  aspect-ratio: 16 / 7;
+  max-height: 520px;
   overflow: hidden;
   background: linear-gradient(150deg, var(--blue-dark) 0%, var(--blue-primary) 100%);
 }
@@ -117,8 +117,8 @@
 /* ── Floating identity card ───────────────────────────────────────── */
 .hero-card-row {
   position: relative;
-  margin-top: -72px;
-  margin-bottom: 28px;
+  margin-top: -128px;
+  margin-bottom: 0;
   z-index: 3;
 }
 
@@ -465,9 +465,9 @@
 }
 
 @media (max-width: 900px) {
-  .hero-canvas { aspect-ratio: 4 / 3; max-height: 320px; }
+  .hero-canvas { aspect-ratio: 4 / 3; max-height: 380px; }
 
-  .hero-card-row { margin-top: -48px; margin-bottom: 20px; }
+  .hero-card-row { margin-top: -96px; margin-bottom: 0; }
   .hero-card {
     flex-direction: column;
     align-items: flex-start;
@@ -563,8 +563,8 @@
 
 @media (max-width: 600px) {
   .container { padding: 0 16px; }
-  .hero-canvas { max-height: 260px; }
-  .hero-card-row { margin-top: -36px; margin-bottom: 16px; }
+  .hero-canvas { max-height: 300px; }
+  .hero-card-row { margin-top: -72px; margin-bottom: 0; }
   .hero-card { padding: 20px; }
   .hero-logo { width: 60px; height: 60px; }
   .hero-heading { font-size: clamp(1.05rem, 5vw, 1.3rem); }
@@ -592,8 +592,8 @@
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
-  .hero-canvas { max-height: 220px; }
-  .hero-card-row { margin-top: -28px; margin-bottom: 14px; }
+  .hero-canvas { max-height: 260px; }
+  .hero-card-row { margin-top: -56px; margin-bottom: 0; }
   .hero-card { padding: 16px 20px; gap: 14px; }
   .hero-logo { width: 48px; height: 48px; }
   .hero-heading { font-size: 1.05rem; }
