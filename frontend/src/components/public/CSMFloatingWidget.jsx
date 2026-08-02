@@ -109,7 +109,7 @@ export default function CSMFloatingWidget() {
           bottom: 24px;
           right: 24px;
           z-index: 1000;
-          font-family: 'Poppins', sans-serif;
+          font-family: var(--font-sans, 'Inter', sans-serif);
         }
 
         .csm-fab {
@@ -117,18 +117,24 @@ export default function CSMFloatingWidget() {
           flex-direction: column;
           align-items: center;
           gap: 3px;
-          background: #B22222;
-          color: #fff;
-          border: none;
-          border-radius: 12px;
+          background: var(--blue-primary, #1565C0);
+          color: var(--white, #fff);
+          border: 2px solid var(--blue-primary, #1565C0);
+          border-radius: var(--radius-md, 10px);
           padding: 10px 14px;
           cursor: pointer;
-          box-shadow: 0 4px 16px rgba(178,34,34,0.45);
-          transition: transform 0.18s, box-shadow 0.18s;
+          box-shadow: var(--shadow-md, 0 10px 24px -8px rgba(21,101,192,0.35));
+          transition: transform 0.18s var(--ease-out, ease), box-shadow 0.18s var(--ease-out, ease), background 0.18s var(--ease-out, ease);
         }
         .csm-fab:hover {
+          background: var(--blue-dark, #0D47A1);
+          border-color: var(--blue-dark, #0D47A1);
           transform: translateY(-2px);
-          box-shadow: 0 6px 22px rgba(178,34,34,0.55);
+          box-shadow: var(--shadow-blue, 0 10px 24px -6px rgba(21,101,192,0.32));
+        }
+        .csm-fab:focus-visible {
+          outline: 2px solid var(--blue-primary, #1565C0);
+          outline-offset: 2px;
         }
         .csm-fab-label {
           font-size: 0.65rem;
@@ -137,20 +143,20 @@ export default function CSMFloatingWidget() {
         }
 
         .csm-panel {
-          background: #fff;
-          border-radius: 14px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+          background: var(--white, #fff);
+          border-radius: var(--radius-lg, 16px);
+          box-shadow: var(--shadow-xl, 0 32px 64px -14px rgba(23,20,18,0.22));
           width: 260px;
           overflow: hidden;
-          border: 1px solid #e5e7eb;
+          border: 1px solid var(--gray-200, #E6E4E2);
         }
 
         .csm-panel-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          background: #B22222;
-          color: #fff;
+          background: linear-gradient(120deg, var(--blue-dark, #0D47A1), var(--blue-primary, #1565C0));
+          color: var(--white, #fff);
           padding: 10px 14px;
         }
         .csm-panel-title {
@@ -160,18 +166,22 @@ export default function CSMFloatingWidget() {
         }
 
         .csm-icon-btn {
-          background: rgba(255,255,255,0.15);
+          background: rgba(255,255,255,0.16);
           border: none;
-          border-radius: 4px;
-          color: #fff;
+          border-radius: var(--radius-sm, 6px);
+          color: var(--white, #fff);
           cursor: pointer;
           padding: 4px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: background 0.15s;
+          transition: background 0.15s var(--ease-out, ease);
         }
         .csm-icon-btn:hover { background: rgba(255,255,255,0.3); }
+        .csm-icon-btn:focus-visible {
+          outline: 2px solid var(--white, #fff);
+          outline-offset: 1px;
+        }
 
         .csm-panel-body {
           padding: 16px;
@@ -183,7 +193,7 @@ export default function CSMFloatingWidget() {
         .csm-desc {
           margin: 0;
           font-size: 0.78rem;
-          color: #4b5563;
+          color: var(--gray-600, #4E4A47);
           text-align: center;
           line-height: 1.5;
         }
@@ -191,25 +201,32 @@ export default function CSMFloatingWidget() {
           width: 150px;
           height: 150px;
           object-fit: contain;
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
+          border: 1px solid var(--gray-200, #E6E4E2);
+          border-radius: var(--radius-sm, 6px);
           padding: 6px;
-          background: #fff;
+          background: var(--white, #fff);
         }
         .csm-link-btn {
           display: block;
           width: 100%;
           text-align: center;
-          background: #B22222;
-          color: #fff;
+          background: var(--green, #2E7D32);
+          color: var(--white, #fff);
           text-decoration: none;
           padding: 9px 14px;
-          border-radius: 8px;
+          border-radius: var(--radius-md, 10px);
           font-size: 0.8rem;
           font-weight: 700;
-          transition: background 0.18s;
+          transition: background 0.18s var(--ease-out, ease), transform 0.18s var(--ease-out, ease);
         }
-        .csm-link-btn:hover { background: #8B0000; }
+        .csm-link-btn:hover {
+          background: var(--green-light, #43A047);
+          transform: translateY(-1px);
+        }
+        .csm-link-btn:focus-visible {
+          outline: 2px solid var(--blue-primary, #1565C0);
+          outline-offset: 2px;
+        }
 
         @media (max-width: 480px) {
           .csm-widget { bottom: 16px; right: 16px; }
