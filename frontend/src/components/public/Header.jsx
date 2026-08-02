@@ -175,94 +175,93 @@ export default function Header() {
 
   return (
     <>
-      {/* ── Hero: framed image + floating identity card ─────────────── */}
-      <div className="header-hero">
-        <div className="hero-canvas">
-          {bannerLoading ? (
-            <div className="hero-skeleton" aria-hidden="true" />
-          ) : banner ? (
-            <img
-              src={getImageUrl(banner.image_url)}
-              alt={banner.title || ''}
-              className="hero-img"
-              onError={(e) => { e.target.style.display = 'none'; }}
-            />
-          ) : (
-            <div className="hero-fallback" aria-hidden="true">
-              <div className="hero-pattern" />
-            </div>
-          )}
-          <div className="hero-canvas-shade" />
-        </div>
+      <header className="site-header">
+        {/* ── Masthead: compact identity plaque, not a competing hero ──── */}
+        <div className="masthead">
+          <div className="masthead-media" aria-hidden="true">
+            {bannerLoading ? (
+              <div className="masthead-skeleton" />
+            ) : banner ? (
+              <img
+                src={getImageUrl(banner.image_url)}
+                alt=""
+                className="masthead-img"
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+            ) : (
+              <div className="masthead-fallback">
+                <div className="masthead-pattern" />
+              </div>
+            )}
+            <div className="masthead-shade" />
+          </div>
 
-        <div className="hero-card-row container">
-          <div className="hero-card">
-            {info?.logo_url && (
-              <div className="hero-brand">
+          <div className="container masthead-row">
+            <div className="masthead-plaque">
+              {info?.logo_url && (
                 <img
                   src={getImageUrl(info.logo_url)}
                   alt="School Logo"
-                  className="hero-logo"
+                  className="masthead-logo"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
-              </div>
-            )}
-
-            <div className="hero-copy">
-              {banner?.title && (
-                <span className="hero-tag">
-                  <SparkleIcon className="hero-tag-icon" />
-                  {banner.title}
-                </span>
               )}
-              <h1 className="hero-heading">{schoolName}</h1>
-              <p className="hero-sub">{motto}</p>
+              <div className="masthead-copy">
+                {banner?.title && (
+                  <span className="masthead-tag">
+                    <SparkleIcon className="masthead-tag-icon" />
+                    {banner.title}
+                  </span>
+                )}
+                <h1 className="masthead-heading">{schoolName}</h1>
+                <p className="masthead-sub">{motto}</p>
+              </div>
             </div>
 
-            <div className="hero-cta">
+            <div className="masthead-actions">
+              <Link to="/about" className="btn btn-ghost">
+                Learn More
+              </Link>
               <Link to="/admissions" className="btn btn-primary">
                 <span>Enroll Now</span>
                 <ArrowRightIcon className="btn-icon" />
               </Link>
-              <Link to="/about" className="btn btn-outline">
-                Learn More
-              </Link>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ── Sticky navigation ────────────────────────────────────────── */}
-      <nav className={`nav-bar${scrolled ? ' is-sticky' : ''}`} ref={navRef}>
-        <div className="container nav-row">
-          <div className={`nav-links${menuOpen ? ' is-mobile-open' : ''}`}>
-            {NAV_ITEMS.map((item) => {
-              const isActivePath = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
-              return (
-                <NavItem
-                  key={item.label}
-                  item={item}
-                  isActivePath={isActivePath}
-                  isOpen={openSection === item.label}
-                  onToggle={toggleSection}
-                  onNavigate={closeMenu}
-                />
-              );
-            })}
+        {/* ── Sticky navigation ──────────────────────────────────────── */}
+        <nav className={`nav-bar${scrolled ? ' is-sticky' : ''}`} ref={navRef}>
+          <div className="container nav-row">
+            <div className={`nav-links${menuOpen ? ' is-mobile-open' : ''}`}>
+              {NAV_ITEMS.map((item) => {
+                const isActivePath = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+                return (
+                  <NavItem
+                    key={item.label}
+                    item={item}
+                    isActivePath={isActivePath}
+                    isOpen={openSection === item.label}
+                    onToggle={toggleSection}
+                    onNavigate={closeMenu}
+                  />
+                );
+              })}
+            </div>
+
+            <button
+              className={`hamburger-btn${menuOpen ? ' is-active' : ''}`}
+              onClick={toggleMenu}
+              aria-label="Toggle navigation menu"
+              aria-expanded={menuOpen}
+            >
+              <span className="h-line h-line-1" />
+              <span className="h-line h-line-2" />
+              <span className="h-line h-line-3" />
+            </button>
           </div>
-
-          <button
-            className={`hamburger-btn${menuOpen ? ' is-active' : ''}`}
-            onClick={toggleMenu}
-            aria-label="Toggle navigation menu"
-            aria-expanded={menuOpen}
-          >
-            <span className="h-line h-line-1" />
-            <span className="h-line h-line-2" />
-            <span className="h-line h-line-3" />
-          </button>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       {menuOpen && <div className="mobile-backdrop" onClick={toggleMenu} />}
     </>
