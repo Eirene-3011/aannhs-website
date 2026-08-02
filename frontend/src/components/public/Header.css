@@ -1,9 +1,15 @@
 /* ===================================================================
-   AANNHS Header — v2 Structural Redesign
+   AANNHS Header — v3 Structural Revision
    Palette: Blue/Green/White (unchanged) | Font: Inter (unchanged)
-   Layout language: framed hero image with a floating identity card
-   that bridges into a clean, segmented sticky nav — mirrors the
-   "report board" / bento language used on the redesigned homepage.
+
+   Signature idea: the old header spent 480px on a full-bleed photo
+   hero with a floating white card — but the homepage now owns that
+   "big hero" moment itself. Repeating it here just doubled the same
+   beat at the top of every page. This version treats the header as
+   a compact identity PLAQUE (logo + name fused directly into a slim
+   masthead strip, no detached card, no overlap) that hands off
+   cleanly into a quiet segmented nav. It reads as signage, not a
+   second hero.
    =================================================================== */
 
 :root {
@@ -46,10 +52,10 @@
   --dur-normal: 280ms;
   --dur-smooth: 400ms;
 
-  --nav-height: 62px;
+  --masthead-height: 132px;
+  --nav-height: 58px;
 }
 
-/* ─── Reset / helpers ─────────────────────────────────────────────── */
 .container {
   max-width: 1240px;
   margin: 0 auto;
@@ -59,56 +65,54 @@
 
 .icon { width: 1em; height: 1em; vertical-align: -0.125em; fill: currentColor; }
 
+.site-header { position: relative; z-index: 500; }
+
 /* ===================================================================
-   HERO — framed image canvas + floating identity card
+   MASTHEAD — compact identity plaque (replaces the old 480px hero
+   + floating card). Logo and name sit directly in the strip; there
+   is no second surface layered on top of it.
    =================================================================== */
-.header-hero {
+.masthead {
   position: relative;
-  min-height: 480px;
+  height: var(--masthead-height);
   overflow: hidden;
-  background: var(--blue-dark);
+  background: linear-gradient(155deg, var(--blue-dark) 0%, var(--blue-primary) 100%);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
 }
 
-.hero-canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: linear-gradient(150deg, var(--blue-dark) 0%, var(--blue-primary) 100%);
-}
+.masthead-media { position: absolute; inset: 0; z-index: 0; }
 
-.hero-img {
+.masthead-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
   display: block;
+  opacity: 0.5;
 }
 
-.hero-canvas-shade {
+.masthead-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(13, 71, 161, 0) 45%, rgba(13, 71, 161, 0.35) 100%);
-  pointer-events: none;
+  background: linear-gradient(100deg, var(--blue-dark) 0%, rgba(13, 71, 161, 0.9) 34%, rgba(21, 101, 192, 0.72) 68%, rgba(21, 101, 192, 0.55) 100%);
 }
 
-.hero-skeleton,
-.hero-fallback {
+.masthead-skeleton,
+.masthead-fallback {
   position: absolute;
   inset: 0;
-  background: linear-gradient(150deg, var(--blue-dark) 0%, var(--blue-primary) 60%, #1976D2 100%);
-  overflow: hidden;
+  background: linear-gradient(150deg, var(--blue-dark) 0%, var(--blue-primary) 70%);
 }
 
-.hero-skeleton { animation: shimmerPulse 1.8s ease-in-out infinite; }
+.masthead-skeleton { animation: shimmerPulse 1.8s ease-in-out infinite; }
 
-.hero-pattern {
+.masthead-pattern {
   position: absolute;
   inset: 0;
   opacity: 0.14;
   background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.5) 1.5px, transparent 0);
-  background-size: 28px 28px;
+  background-size: 24px 24px;
 }
 
 @keyframes shimmerPulse {
@@ -116,98 +120,118 @@
   50% { opacity: 1; }
 }
 
-/* ── Floating identity card ───────────────────────────────────────── */
-.hero-card-row {
-  position: relative;
-  z-index: 3;
-  width: 100%;
-  margin-bottom: 64px;
+.masthead::after {
+  /* soft green glow, echoes the homepage hero-panel-glow without copying it verbatim */
+  content: '';
+  position: absolute;
+  top: -60%;
+  right: -6%;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: var(--green-light);
+  opacity: 0.16;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.hero-card {
+.masthead-row {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
-  gap: 28px;
-  background: var(--white);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
-  padding: 26px 36px;
-  flex-wrap: wrap;
-  border: 1px solid var(--gray-100);
+  justify-content: space-between;
+  gap: 24px;
+  height: 100%;
 }
 
-.hero-brand { flex-shrink: 0; }
+.masthead-plaque {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
 
-.hero-logo {
-  width: 84px;
-  height: 84px;
+.masthead-logo {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
   object-fit: contain;
   border-radius: 50%;
-  background: var(--off-white);
-  padding: 8px;
-  border: 1px solid var(--gray-100);
+  background: var(--white);
+  padding: 7px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
-.hero-copy {
+.masthead-copy {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  min-width: 220px;
+  gap: 5px;
+  min-width: 0;
 }
 
-.hero-tag {
+.masthead-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   align-self: flex-start;
-  padding: 4px 12px;
+  padding: 3px 11px;
   border-radius: var(--radius-full);
-  background: var(--blue-pale);
-  color: var(--blue-primary);
-  font-size: 0.68rem;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--white);
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.hero-tag-icon { width: 12px; height: 12px; }
+.masthead-tag-icon { width: 11px; height: 11px; color: var(--green-light); flex-shrink: 0; }
 
-.hero-heading {
+.masthead-heading {
   font-family: var(--font-sans);
-  color: var(--gray-900);
-  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+  color: var(--white);
+  font-size: clamp(1.05rem, 1.9vw, 1.4rem);
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.22;
   letter-spacing: -0.02em;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.hero-sub {
-  color: var(--gray-500);
-  font-size: 0.92rem;
+.masthead-sub {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.82rem;
   font-weight: 500;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.hero-cta {
+.masthead-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  flex-wrap: wrap;
 }
 
-/* Shared button language (mirrors the homepage's .btn) */
+/* Buttons — light-on-dark variant, distinct from the homepage's
+   solid-blue-on-white CTA so the two headers don't read as clones */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
-  padding: 11px 22px;
-  font-size: 0.85rem;
+  padding: 10px 20px;
+  font-size: 0.83rem;
   font-weight: 700;
   border-radius: var(--radius-md);
-  border: 2px solid transparent;
+  border: 1.5px solid transparent;
   cursor: pointer;
   text-decoration: none;
   transition: all var(--dur-normal) var(--ease-in-out);
@@ -216,36 +240,36 @@
 }
 
 .btn-primary {
-  background: var(--blue-primary);
-  color: var(--white);
-  border-color: var(--blue-primary);
-  box-shadow: 0 4px 14px rgba(21, 101, 192, 0.25);
+  background: var(--white);
+  color: var(--blue-dark);
+  border-color: var(--white);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:hover {
-  background: var(--blue-dark);
-  border-color: var(--blue-dark);
+  background: var(--off-white);
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(13, 71, 161, 0.3);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
 }
 
-.btn-outline {
+.btn-ghost {
   background: transparent;
-  color: var(--gray-700);
-  border-color: var(--gray-200);
+  color: rgba(255, 255, 255, 0.88);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
-.btn-outline:hover {
-  border-color: var(--blue-primary);
-  color: var(--blue-primary);
-  transform: translateY(-2px);
+.btn-ghost:hover {
+  border-color: var(--white);
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .btn-icon { width: 15px; height: 15px; transition: transform var(--dur-normal) var(--ease-in-out); }
 .btn:hover .btn-icon { transform: translateX(3px); }
 
 /* ===================================================================
-   NAVIGATION — segmented sticky bar
+   NAVIGATION — segmented sticky bar, unchanged in spirit but tuned
+   to sit flush under the slimmer masthead
    =================================================================== */
 .nav-bar {
   background: var(--blue-primary);
@@ -461,25 +485,15 @@
 @media (max-width: 1024px) {
   .n-link { padding: 0 10px; font-size: 0.74rem; }
   .n-link::after { left: 10px; right: 10px; }
-  .hero-card { padding: 24px 28px; gap: 22px; }
-  .hero-logo { width: 72px; height: 72px; }
+  :root { --masthead-height: 118px; }
+  .masthead-logo { width: 52px; height: 52px; }
+  .masthead-sub { display: none; }
 }
 
 @media (max-width: 900px) {
-  .header-hero { min-height: 420px; }
+  :root { --masthead-height: 104px; }
 
-  .hero-card-row { margin-bottom: 32px; }
-  .hero-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 24px;
-    border-radius: var(--radius-lg);
-  }
-  .hero-brand { align-self: center; }
-  .hero-copy { align-items: flex-start; text-align: left; width: 100%; }
-  .hero-cta { width: 100%; }
-  .hero-cta .btn { flex: 1; justify-content: center; }
+  .masthead-actions .btn-ghost { display: none; }
 
   .hamburger-btn { display: flex; }
 
@@ -564,16 +578,16 @@
 
 @media (max-width: 600px) {
   .container { padding: 0 16px; }
-  .header-hero { min-height: 360px; }
-  .hero-card-row { margin-bottom: 24px; }
-  .hero-card { padding: 20px; }
-  .hero-logo { width: 60px; height: 60px; }
-  .hero-heading { font-size: clamp(1.05rem, 5vw, 1.3rem); }
-  .hero-sub { font-size: 0.85rem; }
-  .hero-tag { font-size: 0.62rem; padding: 4px 10px; }
-  .hero-tag-icon { width: 11px; height: 11px; }
+  :root { --masthead-height: 92px; }
 
-  .nav-row { height: 54px; }
+  .masthead-logo { width: 44px; height: 44px; padding: 5px; }
+  .masthead-heading { font-size: clamp(0.92rem, 4.6vw, 1.05rem); }
+  .masthead-tag { display: none; }
+  .masthead-plaque { gap: 12px; }
+  .masthead-actions .btn-primary { padding: 8px 14px; font-size: 0.76rem; }
+  .masthead-actions .btn-icon { display: none; }
+
+  .nav-row { height: 52px; }
   .nav-links { width: 280px; padding: 72px 0 24px 0; }
   .n-link { padding: 14px 20px; font-size: 0.82rem; }
   .dd-item { padding: 10px 20px 10px 26px; font-size: 0.8rem; }
@@ -582,23 +596,16 @@
 }
 
 @media (max-width: 380px) {
-  .hero-heading { font-size: 1rem; }
-  .hero-sub { font-size: 0.8rem; }
-  .hero-logo { width: 52px; height: 52px; }
-  .hero-card { padding: 18px; gap: 12px; }
-  .hero-cta { flex-direction: column; }
+  .masthead-logo { width: 38px; height: 38px; }
+  .masthead-heading { font-size: 0.85rem; }
   .nav-links { width: 260px; }
   .n-link { padding: 13px 18px; font-size: 0.8rem; }
   .dd-item { padding: 10px 18px 10px 24px; font-size: 0.78rem; }
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
-  .header-hero { min-height: 300px; }
-  .hero-card-row { margin-bottom: 18px; }
-  .hero-card { padding: 16px 20px; gap: 14px; }
-  .hero-logo { width: 48px; height: 48px; }
-  .hero-heading { font-size: 1.05rem; }
-  .hero-sub { font-size: 0.78rem; }
+  :root { --masthead-height: 80px; }
+  .masthead-sub { display: none; }
 }
 
 /* ===================================================================
@@ -611,9 +618,9 @@
     transition-duration: 0.01ms !important;
   }
   .n-link::after { transition: none; }
-  .hero-skeleton { animation: none; opacity: 0.7; }
+  .masthead-skeleton { animation: none; opacity: 0.7; }
 }
 
 @media print {
-  .header-hero, .nav-bar, .mobile-backdrop { display: none !important; }
+  .masthead, .nav-bar, .mobile-backdrop { display: none !important; }
 }
