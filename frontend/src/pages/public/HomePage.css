@@ -1,8 +1,8 @@
 /* ================================================================
    AANNHS HomePage — v2 Structural Redesign
    Theme: Blue/Green/White palette | Font: Inter  (unchanged)
-   Layout language: campus wayfinding rail + mosaic "report board"
-   dashboard + directory-style quick access + featured story grid.
+   Layout language: mosaic "report board" dashboard, directory-style
+   quick access, and a featured story grid.
    ================================================================ */
 
 :root {
@@ -35,7 +35,6 @@
   --transition-spring: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --nav-height: 84px;
-  --rail-width: 64px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -71,7 +70,7 @@ img, svg { max-width: 100%; height: auto; }
 }
 
 /* ================================================================
-   Section labels — index-style, matches the wayfinding rail language
+   Section labels — index-style, echoes the page's own section order
    ================================================================ */
 .sec-label {
   display: flex;
@@ -194,94 +193,6 @@ img, svg { max-width: 100%; height: auto; }
 .btn-icon { width: 16px; height: 16px; margin-left: 7px; transition: transform var(--transition-smooth); }
 .btn:hover .btn-icon { transform: translateX(4px); }
 .btn:focus-visible { outline: 2px solid var(--blue-primary); outline-offset: 3px; }
-
-/* ================================================================
-   WAYFINDING RAIL — fixed left index, campus-signage language.
-   The section order is real (top-to-bottom page order) so numbering
-   here actually encodes navigation information.
-   ================================================================ */
-.wayfind-rail {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: var(--rail-width);
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-}
-
-.wayfind-rail-inner {
-  pointer-events: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  background: var(--white);
-  border-right: 1px solid var(--gray-100);
-  border-top: 1px solid var(--gray-100);
-  border-bottom: 1px solid var(--gray-100);
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  box-shadow: var(--shadow-md);
-  padding: 10px 0;
-}
-
-.wayfind-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  width: var(--rail-width);
-  padding: 14px 4px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  transition: background var(--transition-smooth);
-}
-
-.wayfind-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 3px;
-  background: transparent;
-  border-radius: 0 3px 3px 0;
-  transition: background var(--transition-smooth);
-}
-
-.wayfind-item:hover { background: var(--off-white); }
-
-.wayfind-item.active::before { background: var(--blue-primary); }
-.wayfind-item.active .wayfind-num { color: var(--blue-primary); }
-.wayfind-item.active .wayfind-label { color: var(--gray-900); opacity: 1; }
-
-.wayfind-num {
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--gray-400);
-  transition: color var(--transition-smooth);
-}
-
-.wayfind-label {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gray-400);
-  opacity: 0.75;
-  transition: all var(--transition-smooth);
-  max-height: 90px;
-}
-
-@media (max-width: 1180px) {
-  .wayfind-rail { display: none; }
-}
 
 /* ================================================================
    HERO — split panel: identity block + slideshow (was full-bleed
@@ -993,8 +904,9 @@ img, svg { max-width: 100%; height: auto; }
 .cta-split {
   position: relative;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  min-height: 340px;
+  grid-template-columns: 1.3fr 1fr;
+  align-items: stretch;
+  min-height: 320px;
 }
 
 .cta-split-left {
@@ -1003,19 +915,34 @@ img, svg { max-width: 100%; height: auto; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 72px 60px 72px 0;
+  padding: 72px 48px 72px 0;
 }
 
 .cta-split-right {
   position: relative;
   background: linear-gradient(155deg, var(--green) 0%, var(--green-light) 100%);
-  clip-path: polygon(14% 0, 100% 0, 100% 100%, 0% 100%);
+  clip-path: polygon(22% 0, 100% 0, 100% 100%, 0% 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 60px 48px 60px 88px;
+  gap: 14px;
+  padding: 56px 56px 56px 110px;
 }
+
+.cta-right-icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.cta-right-icon { width: 22px; height: 22px; color: var(--white); }
 
 .cta-pattern {
   position: absolute;
@@ -1056,11 +983,11 @@ img, svg { max-width: 100%; height: auto; }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 10px;
 }
 
-.cta-right-num { font-size: clamp(2.4rem, 5vw, 3.4rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px; }
-.cta-right-sub { font-size: 0.88rem; color: rgba(255, 255, 255, 0.85); max-width: 220px; line-height: 1.5; }
+.cta-right-num { font-size: clamp(2.2rem, 4.4vw, 3rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1; }
+.cta-right-sub { font-size: 0.88rem; color: rgba(255, 255, 255, 0.88); max-width: 230px; line-height: 1.55; }
+.cta-right-sub-lg { font-size: 0.98rem; max-width: 250px; }
 
 /* ================================================================
    Responsive adjustments
