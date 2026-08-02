@@ -649,27 +649,6 @@ export default function HomePage() {
             </div>
             <h2>Ready to join the AANNHS community?</h2>
             <p>Take the first step toward quality education. Enroll today or reach out to learn more about our programs and offerings.</p>
-            <div className="cta-actions">
-              <Link to="/admissions" className="btn btn-primary btn-lg">
-                <span>Enroll Now</span>
-                <ArrowRightIcon className="btn-icon" />
-              </Link>
-              <Link to="/contact" className="btn btn-outline-light btn-lg">Contact Us</Link>
-            </div>
-          </div>
-          <div className="cta-split-right">
-            <div className="cta-right-icon-wrap"><UsersRoundIcon className="cta-right-icon" /></div>
-            {dashStats.enrollment_count != null ? (
-              <>
-                <span className="cta-right-label">Our Community</span>
-                <div className="cta-right-num">{Number(dashStats.enrollment_count).toLocaleString()}</div>
-                <p className="cta-right-sub">learners already part of the AANNHS community this school year.</p>
-              </>
-            ) : (
-              <>
-                <span className="cta-right-label">Our Community</span>
-                <p className="cta-right-sub cta-right-sub-lg">Be part of a growing community of learners, educators, and families working toward the same goal.</p>
-              </>
             )}
           </div>
         </div>
