@@ -124,13 +124,6 @@ const QUICK_LINKS = [
   { code: 'CT', label: 'Contact Us', desc: 'Get in touch', path: '/contact', Icon: PhoneIcon, accent: 'teal' },
 ];
 
-const RAIL_SECTIONS = [
-  { id: 'dashboard', num: '01', label: 'Dashboard' },
-  { id: 'access', num: '02', label: 'Quick Access' },
-  { id: 'programs', num: '03', label: 'Programs' },
-  { id: 'enroll', num: '04', label: 'Enroll' },
-];
-
 /* ─── Intersection Observer hook ──────────────────────────────────────── */
 function useInView(threshold = 0.2) {
   const [node, setNode] = useState(null);
@@ -293,8 +286,6 @@ export default function HomePage() {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
 
-  const [activeSection, setActiveSection] = useState(RAIL_SECTIONS[0].id);
-
   useEffect(() => {
     api.get('/school-dashboard').then(r => setDashboard(r.data)).catch(() => {}).finally(() => setLoadingDash(false));
     api.get('/ppas').then(r => setPpas(r.data.slice(0, 3))).catch(() => {});
@@ -312,21 +303,6 @@ export default function HomePage() {
     const timer = setInterval(() => setCurrentBanner(p => (p + 1) % banners.length), 6000);
     return () => clearInterval(timer);
   }, [banners.length, autoplay]);
-
-  /* Scroll-spy for the wayfinding rail */
-  useEffect(() => {
-    const onScroll = () => {
-      let current = RAIL_SECTIONS[0].id;
-      for (const s of RAIL_SECTIONS) {
-        const el = document.getElementById(s.id);
-        if (el && el.getBoundingClientRect().top <= 180) current = s.id;
-      }
-      setActiveSection(current);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id);
@@ -377,25 +353,6 @@ export default function HomePage() {
 
   return (
     <div className="homepage">
-      {/* ============================================================
-          WAYFINDING RAIL — fixed index, doubles as scroll-spy nav
-          ============================================================ */}
-      <nav className="wayfind-rail" aria-label="Page sections">
-        <div className="wayfind-rail-inner">
-          {RAIL_SECTIONS.map(s => (
-            <button
-              key={s.id}
-              type="button"
-              className={`wayfind-item${activeSection === s.id ? ' active' : ''}`}
-              onClick={() => scrollToSection(s.id)}
-            >
-              <span className="wayfind-num">{s.num}</span>
-              <span className="wayfind-label">{s.label}</span>
-            </button>
-          ))}
-        </div>
-      </nav>
-
       {/* ============================================================
           HERO — split identity panel + slideshow
           ============================================================ */}
@@ -714,9 +671,19 @@ export default function HomePage() {
             </div>
           </div>
           <div className="cta-split-right">
-            <span className="cta-right-label">Section 04</span>
-            <div className="cta-right-num">{dashStats.enrollment_count != null ? Number(dashStats.enrollment_count).toLocaleString() : '—'}</div>
-            <p className="cta-right-sub">learners already part of the AANNHS community this school year.</p>
+            <div className="cta-right-icon-wrap"><UsersRoundIcon className="cta-right-icon" /></div>
+            {dashStats.enrollment_count != null ? (
+              <>
+                <span className="cta-right-label">Our Community</span>
+                <div className="cta-right-num">{Number(dashStats.enrollment_count).toLocaleString()}</div>
+                <p className="cta-right-sub">learners already part of the AANNHS community this school year.</p>
+              </>
+            ) : (
+              <>
+                <span className="cta-right-label">Our Community</span>
+                <p className="cta-right-sub cta-right-sub-lg">Be part of a growing community of learners, educators, and families working toward the same goal.</p>
+              </>
+            )}
           </div>
         </div>
       </section>
