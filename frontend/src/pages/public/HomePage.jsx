@@ -421,19 +421,6 @@ export default function HomePage() {
       </section>
 
       {/* ============================================================
-          WELCOME STRIP — thin identity bar
-          ============================================================ */}
-      <section className="welcome-strip">
-        <div className="container welcome-strip-inner">
-          <img src="/logo.png" alt="AANNHS Logo" className="welcome-logo" onError={(e) => { e.target.style.display = 'none'; }} />
-          <p className="welcome-strip-text">
-            <strong>Agapito A. Nasol National High School</strong> is committed to providing quality secondary education that
-            empowers every Nasolite to become a globally competitive, values-driven, and community-oriented individual.
-          </p>
-        </div>
-      </section>
-
-      {/* ============================================================
           DASHBOARD — mosaic report board
           ============================================================ */}
       <section id="dashboard" className="section dashboard-section" ref={dashRef}>
