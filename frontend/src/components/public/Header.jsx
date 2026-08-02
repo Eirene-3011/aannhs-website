@@ -219,14 +219,9 @@ export default function Header() {
               </div>
             </div>
 
-            <div className="masthead-actions">
-              <Link to="/about" className="btn btn-ghost">
-                Learn More
-              </Link>
-              <Link to="/admissions" className="btn btn-primary">
-                <span>Enroll Now</span>
-                <ArrowRightIcon className="btn-icon" />
-              </Link>
+            <div className="masthead-badges">
+              <span className="masthead-pill">Public Secondary School</span>
+              <span className="masthead-pill masthead-pill-green">DepEd Recognized</span>
             </div>
           </div>
         </div>
@@ -235,6 +230,12 @@ export default function Header() {
         <nav className={`nav-bar${scrolled ? ' is-sticky' : ''}`} ref={navRef}>
           <div className="container nav-row">
             <div className={`nav-links${menuOpen ? ' is-mobile-open' : ''}`}>
+              <div className="nav-drawer-brand">
+                {info?.logo_url && (
+                  <img src={getImageUrl(info.logo_url)} alt="" className="nav-drawer-logo" onError={(e) => { e.target.style.display = 'none'; }} />
+                )}
+                <span className="nav-drawer-name">{schoolName}</span>
+              </div>
               {NAV_ITEMS.map((item) => {
                 const isActivePath = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
                 return (
