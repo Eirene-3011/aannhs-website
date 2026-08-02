@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 import { getImageUrl } from '../../utils/helpers';
@@ -114,20 +114,21 @@ const PieChartIcon = (p) => (
   </svg>
 );
 
+/* Two-letter directory codes — campus signage language, not a fake sequence */
 const QUICK_LINKS = [
-  { label: 'About AANNHS', desc: 'School profile & history', path: '/about', Icon: SchoolIcon, accent: 'blue' },
-  { label: 'Admissions', desc: 'Enrollment information', path: '/admissions', Icon: ClipboardIcon, accent: 'blue' },
-  { label: 'Programs & Activities', desc: 'PPAs and events', path: '/ppas', Icon: GraduationIcon, accent: 'green' },
-  { label: 'Accomplishments', desc: 'Awards & achievements', path: '/accomplishments', Icon: TrophyIcon, accent: 'purple' },
-  { label: "Students' Corner", desc: 'Featured students', path: '/students-corner', Icon: StarIcon, accent: 'orange' },
-  { label: 'Contact Us', desc: 'Get in touch', path: '/contact', Icon: PhoneIcon, accent: 'teal' },
+  { code: 'AB', label: 'About AANNHS', desc: 'School profile & history', path: '/about', Icon: SchoolIcon, accent: 'blue' },
+  { code: 'AD', label: 'Admissions', desc: 'Enrollment information', path: '/admissions', Icon: ClipboardIcon, accent: 'blue2' },
+  { code: 'PR', label: 'Programs & Activities', desc: 'PPAs and events', path: '/ppas', Icon: GraduationIcon, accent: 'green' },
+  { code: 'AC', label: 'Accomplishments', desc: 'Awards & achievements', path: '/accomplishments', Icon: TrophyIcon, accent: 'purple' },
+  { code: 'SC', label: "Students' Corner", desc: 'Featured students', path: '/students-corner', Icon: StarIcon, accent: 'orange' },
+  { code: 'CT', label: 'Contact Us', desc: 'Get in touch', path: '/contact', Icon: PhoneIcon, accent: 'teal' },
 ];
 
-const DASH_ICONS = [
-  { Icon: UsersIcon, accent: 'blue' },
-  { Icon: UserCheckIcon, accent: 'blue' },
-  { Icon: BuildingIcon, accent: 'green' },
-  { Icon: TrendingUpIcon, accent: 'purple' },
+const RAIL_SECTIONS = [
+  { id: 'dashboard', num: '01', label: 'Dashboard' },
+  { id: 'access', num: '02', label: 'Quick Access' },
+  { id: 'programs', num: '03', label: 'Programs' },
+  { id: 'enroll', num: '04', label: 'Enroll' },
 ];
 
 /* ─── Intersection Observer hook ──────────────────────────────────────── */
@@ -188,7 +189,7 @@ function KpiValue({ value, start, small }) {
 }
 
 /* ─── Animated SVG Donut Pie Chart ───────────────────────────────────── */
-function DonutChart({ data, animate, size = 200 }) {
+function DonutChart({ data, animate, size = 168 }) {
   if (!data || data.length === 0) return null;
   const total = data.reduce((s, d) => s + d.value, 0);
   const pad = 14;
@@ -203,7 +204,7 @@ function DonutChart({ data, animate, size = 200 }) {
   const segments = data.map((d, i) => {
     const pct = d.value / total;
     const dashArray = `${circumference * pct} ${circumference}`;
-    const dashOffset = -circumference * accumulated + (animate ? 0 : 0);
+    const dashOffset = -circumference * accumulated;
     accumulated += pct;
     return (
       <circle
@@ -229,18 +230,15 @@ function DonutChart({ data, animate, size = 200 }) {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${viewSize} ${viewSize}`} className="donut-chart">
-      {/* Background ring */}
       <circle cx={cx} cy={cy} r={outerR} fill="none" stroke="var(--gray-100)" strokeWidth={outerR - innerR} />
-      {/* Animated segments */}
       {segments}
-      {/* Center text */}
-      <text x={cx} y={cy - 8} textAnchor="middle" className="donut-center-num" fill="var(--gray-900)" fontSize="22" fontWeight="800">{total.toLocaleString()}</text>
-      <text x={cx} y={cy + 14} textAnchor="middle" className="donut-center-label" fill="var(--gray-500)" fontSize="10" fontWeight="600">TOTAL</text>
+      <text x={cx} y={cy - 8} textAnchor="middle" className="donut-center-num" fill="var(--gray-900)" fontSize="20" fontWeight="800">{total.toLocaleString()}</text>
+      <text x={cx} y={cy + 14} textAnchor="middle" className="donut-center-label" fill="var(--gray-500)" fontSize="9" fontWeight="600">TOTAL</text>
     </svg>
   );
 }
 
-/* ─── Horizontal Bar Chart (Replaced) ────────────────────────────────── */
+/* ─── Horizontal Bar Chart ────────────────────────────────────────────── */
 function HorizontalBarChart({ data, animate }) {
   if (!data || data.length === 0) return null;
   const maxVal = Math.max(...data.flatMap(d => [d.sections, d.classrooms]), 1);
@@ -263,21 +261,15 @@ function HorizontalBarChart({ data, animate }) {
               <div className="row-label">{d.name}</div>
               <div className="row-bars-container">
                 <div className="horizontal-bar-group">
-                  <div 
-                    className="h-bar h-bar-sections" 
-                    style={{ 
-                      width: animate ? `${secW}%` : '0%',
-                      transitionDelay: `${i * 0.05}s`
-                    }}
+                  <div
+                    className="h-bar h-bar-sections"
+                    style={{ width: animate ? `${secW}%` : '0%', transitionDelay: `${i * 0.05}s` }}
                   >
                     <span className="h-bar-value">{d.sections}</span>
                   </div>
-                  <div 
-                    className="h-bar h-bar-classrooms" 
-                    style={{ 
-                      width: animate ? `${clsW}%` : '0%',
-                      transitionDelay: `${i * 0.05 + 0.1}s`
-                    }}
+                  <div
+                    className="h-bar h-bar-classrooms"
+                    style={{ width: animate ? `${clsW}%` : '0%', transitionDelay: `${i * 0.05 + 0.1}s` }}
                   >
                     <span className="h-bar-value">{d.classrooms}</span>
                   </div>
@@ -301,6 +293,8 @@ export default function HomePage() {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
 
+  const [activeSection, setActiveSection] = useState(RAIL_SECTIONS[0].id);
+
   useEffect(() => {
     api.get('/school-dashboard').then(r => setDashboard(r.data)).catch(() => {}).finally(() => setLoadingDash(false));
     api.get('/ppas').then(r => setPpas(r.data.slice(0, 3))).catch(() => {});
@@ -319,6 +313,26 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, [banners.length, autoplay]);
 
+  /* Scroll-spy for the wayfinding rail */
+  useEffect(() => {
+    const onScroll = () => {
+      let current = RAIL_SECTIONS[0].id;
+      for (const s of RAIL_SECTIONS) {
+        const el = document.getElementById(s.id);
+        if (el && el.getBoundingClientRect().top <= 180) current = s.id;
+      }
+      setActiveSection(current);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollToSection = useCallback((id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
   const goToBanner = useCallback((i) => { setCurrentBanner(i); setAutoplay(false); }, []);
   const prevBanner = useCallback(() => setCurrentBanner(p => (p - 1 + banners.length) % banners.length), [banners.length]);
   const nextBanner = useCallback(() => setCurrentBanner(p => (p + 1) % banners.length), [banners.length]);
@@ -326,17 +340,8 @@ export default function HomePage() {
   const banner = banners[currentBanner];
   const dashStats = dashboard?.stats || {};
   const grades = dashboard?.grades || [];
-
-  const dashItems = [
-    { label: 'Total Enrollment', value: dashStats.enrollment_count != null ? Number(dashStats.enrollment_count) : '—', small: false },
-    { label: 'Teaching Personnel', value: dashStats.teaching_personnel != null ? Number(dashStats.teaching_personnel) : '—', small: false },
-    { label: 'Non-Teaching Personnel', value: dashStats.non_teaching_personnel != null ? Number(dashStats.non_teaching_personnel) : '—', small: false },
-    { label: 'Performance Indicator', value: dashStats.performance_indicator ?? '—', small: true },
-  ];
-
   const hasBanners = banners.length > 0;
 
-  /* ─── Chart data derived from dashboard ──────────────────────────── */
   const barChartData = useMemo(() => {
     if (!grades || grades.length === 0) return [];
     return grades.map(g => ({
@@ -351,12 +356,11 @@ export default function HomePage() {
     const nonTeaching = Number(dashStats.non_teaching_personnel) || 0;
     if (teaching === 0 && nonTeaching === 0) return [];
     return [
-      { name: 'Teaching', value: teaching, color: '#c41e3a' },
-      { name: 'Non-Teaching', value: nonTeaching, color: '#c99a3b' },
+      { name: 'Teaching', value: teaching, color: '#1565C0' },
+      { name: 'Non-Teaching', value: nonTeaching, color: '#43A047' },
     ];
   }, [dashStats.teaching_personnel, dashStats.non_teaching_personnel]);
 
-  /* ─── Summary stats ────────────────────────────────────────────── */
   const summaryStats = useMemo(() => {
     const totalSections = grades.reduce((s, g) => s + (Number(g.sections_count) || 0), 0);
     const totalClassrooms = grades.reduce((s, g) => s + (Number(g.classrooms_count) || 0), 0);
@@ -374,229 +378,273 @@ export default function HomePage() {
   return (
     <div className="homepage">
       {/* ============================================================
-          HERO — Cinematic slideshow with Ken Burns zoom
+          WAYFINDING RAIL — fixed index, doubles as scroll-spy nav
+          ============================================================ */}
+      <nav className="wayfind-rail" aria-label="Page sections">
+        <div className="wayfind-rail-inner">
+          {RAIL_SECTIONS.map(s => (
+            <button
+              key={s.id}
+              type="button"
+              className={`wayfind-item${activeSection === s.id ? ' active' : ''}`}
+              onClick={() => scrollToSection(s.id)}
+            >
+              <span className="wayfind-num">{s.num}</span>
+              <span className="wayfind-label">{s.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* ============================================================
+          HERO — split identity panel + slideshow
           ============================================================ */}
       <section
-        className="hero-slideshow"
+        className="hero-split"
         onMouseEnter={() => banners.length > 1 && setAutoplay(false)}
         onMouseLeave={() => banners.length > 1 && setAutoplay(true)}
       >
-        {bannersLoading ? (
-          <div className="hero-skeleton" aria-hidden="true" />
-        ) : hasBanners && banner ? (
-          <>
-            <div className="hero-slide-track">
-              {banners.map((b, i) => (
-                <div key={i} className={`hero-slide${i === currentBanner ? ' active' : ''}`} aria-hidden={i !== currentBanner}>
-                  <img src={getImageUrl(b.image_url)} alt={b.title || ''} className="hero-slide-img" onError={(e) => { e.target.style.display = 'none'; }} />
-                  <div className="hero-slide-overlay" />
-                  <div className="hero-ken-burns" />
-                </div>
-              ))}
-            </div>
-
-            {/* Vignette overlay for cinematic depth */}
-            <div className="hero-vignette" />
-
-            {/* Hero content overlay removed as requested */}
-
-            {banners.length > 1 && (
-              <>
-                <button className="hero-nav hero-nav-prev" onClick={prevBanner} aria-label="Previous banner"><ChevronLeftIcon /></button>
-                <button className="hero-nav hero-nav-next" onClick={nextBanner} aria-label="Next banner"><ChevronRightIcon /></button>
-                <div className="hero-controls">
-                  <button type="button" className="hero-toggle" onClick={() => setAutoplay(a => !a)} aria-label={autoplay ? 'Pause slideshow' : 'Play slideshow'} title={autoplay ? 'Pause' : 'Play'}>
-                    {autoplay ? <PauseIcon className="hero-toggle-icon" /> : <PlayIcon className="hero-toggle-icon" />}
-                  </button>
-                  <div className="hero-dots" role="tablist" aria-label="Banner navigation">
-                    {banners.map((_, i) => (
-                      <button key={i} role="tab" aria-selected={i === currentBanner} aria-label={`Show banner ${i + 1}`} className={`hero-dot${i === currentBanner ? ' active' : ''}`} onClick={() => goToBanner(i)} />
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <div className="hero-fallback" aria-hidden="true">
-            <div className="hero-fallback-pattern" />
+        <div className="hero-panel">
+          <div className="hero-panel-pattern" aria-hidden="true" />
+          <div className="hero-panel-glow" aria-hidden="true" />
+          <div className="hero-badge-row">
+            <span className="hero-badge-pill">Public Secondary School</span>
+            <span className="hero-badge-pill hero-badge-pill-gold">DepEd Recognized</span>
           </div>
-        )}
-      </section>
-
-      {/* Ribbon divider */}
-      <div className="ribbon-divider" aria-hidden="true" />
-
-      {/* ============================================================
-          SCHOOL DASHBOARD — KPI Cards + Charts
-          ============================================================ */}
-      <section className="section dashboard-section" ref={dashRef}>
-        <div className="container">
-          <div className={`section-header reveal${dashInView ? ' in-view' : ''}`}>
-            <div className="section-header-inner">
-              <span className="section-eyebrow">At a Glance</span>
-              <h2 className="section-title">School Dashboard</h2>
-              <p className="section-subtitle">Key statistics and performance indicators for the current school year.</p>
-            </div>
-            <span className="title-accent title-accent-center" aria-hidden="true" />
+          <h1 className="hero-headline">Agapito A. Nasol National High School</h1>
+          <p className="hero-tagline">Guiding every learner toward academic excellence, character, and community — one school year at a time.</p>
+          <div className="hero-panel-actions">
+            <Link to="/admissions" className="btn btn-primary">
+              <span>Enroll Now</span>
+              <ArrowRightIcon className="btn-icon" />
+            </Link>
+            <button type="button" className="btn btn-outline-light" onClick={() => scrollToSection('dashboard')}>
+              View Dashboard
+            </button>
           </div>
+        </div>
 
-          {loadingDash ? (
-            <div className="kpi-grid">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="kpi-card kpi-skeleton">
-                  <div className="skeleton skeleton-icon" /><div className="skeleton skeleton-num" /><div className="skeleton skeleton-label" />
-                </div>
-              ))}
-            </div>
-          ) : (
+        <div className="hero-media">
+          {bannersLoading ? (
+            <div className="hero-skeleton" aria-hidden="true" />
+          ) : hasBanners && banner ? (
             <>
-              {/* KPI Cards */}
-              <div className={`kpi-grid${dashInView ? ' in-view' : ''}`}>
-                {dashItems.map((item, i) => {
-                  const { Icon, accent } = DASH_ICONS[i];
-                  return (
-                    <div key={item.label} className={`kpi-card accent-${accent}`}>
-                      <div className="kpi-glow" />
-                      <div className="kpi-icon-wrap"><Icon className="kpi-icon" /></div>
-                      <KpiValue value={item.value} start={dashInView} small={item.small} />
-                      <p className="kpi-label">{item.label}</p>
-                      <div className="kpi-hover-shine" />
-                    </div>
-                  );
-                })}
+              <div className="hero-slide-track">
+                {banners.map((b, i) => (
+                  <div key={i} className={`hero-slide${i === currentBanner ? ' active' : ''}`} aria-hidden={i !== currentBanner}>
+                    <img src={getImageUrl(b.image_url)} alt={b.title || ''} className="hero-slide-img" onError={(e) => { e.target.style.display = 'none'; }} />
+                    <div className="hero-slide-overlay" />
+                  </div>
+                ))}
               </div>
 
-              {/* ─── Summary Info Strip ──────────────────────────── */}
-              <div className={`dash-summary-strip${dashInView ? ' in-view' : ''}`}>
-                <div className="dash-summary-card">
-                  <div className="dash-summary-icon"><BookOpenIcon /></div>
-                  <div className="dash-summary-content">
-                    <span className="dash-summary-number">{summaryStats.totalSections}</span>
-                    <span className="dash-summary-label">Total Sections</span>
-                  </div>
-                </div>
-                <div className="dash-summary-card">
-                  <div className="dash-summary-icon"><BuildingIcon /></div>
-                  <div className="dash-summary-content">
-                    <span className="dash-summary-number">{summaryStats.totalClassrooms}</span>
-                    <span className="dash-summary-label">Classrooms</span>
-                  </div>
-                </div>
-                <div className="dash-summary-card">
-                  <div className="dash-summary-icon"><UsersRoundIcon /></div>
-                  <div className="dash-summary-content">
-                    <span className="dash-summary-number">{summaryStats.avgPerSection || '—'}</span>
-                    <span className="dash-summary-label">Avg Students / Section</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* ─── Charts Section ──────────────────────────────── */}
-              <div className={`charts-section${chartInView ? ' in-view' : ''}`} ref={chartRef}>
-                <div className="charts-header">
-                  <div className="charts-header-left">
-                    <div className="charts-header-row">
-                      <span className="section-eyebrow">Visual Insights</span>
-                      <h3 className="charts-title">Enrollment & Personnel Analytics</h3>
-                    </div>
-                    <p className="charts-subtitle">Grade-level distribution and staff composition at a glance.</p>
-                  </div>
-                  <div className="charts-legend-badge">
-                    <PieChartIcon className="charts-badge-icon" />
-                    <span>Live Data</span>
-                  </div>
-                </div>
-
-                <div className="charts-grid">
-                  {/* Horizontal Bar Chart — Grade-Level Breakdown */}
-                  <div className="chart-card chart-card-lg">
-                    <div className="chart-card-header">
-                      <div className="chart-card-title-wrap">
-                        <CalendarIcon className="chart-card-icon" />
-                        <h4>Grade-Level Breakdown</h4>
-                      </div>
-                      <div className="chart-card-legend">
-                        <span className="legend-dot legend-dot-red" />
-                        <span>Sections</span>
-                        <span className="legend-dot legend-dot-gold" />
-                        <span>Classrooms</span>
-                      </div>
-                    </div>
-                    <div className="chart-container">
-                      {barChartData.length > 0 ? (
-                        <HorizontalBarChart data={barChartData} animate={chartInView} />
-                      ) : (
-                        <div className="chart-empty">No grade data available</div>
-                      )}
+              {banners.length > 1 && (
+                <>
+                  <button className="hero-nav hero-nav-prev" onClick={prevBanner} aria-label="Previous banner"><ChevronLeftIcon /></button>
+                  <button className="hero-nav hero-nav-next" onClick={nextBanner} aria-label="Next banner"><ChevronRightIcon /></button>
+                  <div className="hero-controls">
+                    <button type="button" className="hero-toggle" onClick={() => setAutoplay(a => !a)} aria-label={autoplay ? 'Pause slideshow' : 'Play slideshow'} title={autoplay ? 'Pause' : 'Play'}>
+                      {autoplay ? <PauseIcon className="hero-toggle-icon" /> : <PlayIcon className="hero-toggle-icon" />}
+                    </button>
+                    <div className="hero-dots" role="tablist" aria-label="Banner navigation">
+                      {banners.map((_, i) => (
+                        <button key={i} role="tab" aria-selected={i === currentBanner} aria-label={`Show banner ${i + 1}`} className={`hero-dot${i === currentBanner ? ' active' : ''}`} onClick={() => goToBanner(i)} />
+                      ))}
                     </div>
                   </div>
-
-                  {/* Donut Pie Chart — Personnel Distribution */}
-                  <div className="chart-card chart-card-sm">
-                    <div className="chart-card-header">
-                      <div className="chart-card-title-wrap">
-                        <PieChartIcon className="chart-card-icon" />
-                        <h4>Personnel Distribution</h4>
-                      </div>
-                    </div>
-                    <div className="chart-container chart-container-pie">
-                      {pieChartData.length > 0 ? (
-                        <DonutChart data={pieChartData} animate={chartInView} />
-                      ) : (
-                        <div className="chart-empty">No personnel data available</div>
-                      )}
-                    </div>
-                    {/* Personnel count badges */}
-                    {pieChartData.length > 0 && (
-                      <div className="personnel-badges">
-                        <div className="personnel-badge">
-                          <span className="personnel-badge-dot" style={{ background: '#c41e3a' }} />
-                          <span className="personnel-badge-label">Teaching</span>
-                          <span className="personnel-badge-value">{Number(dashStats.teaching_personnel) || 0}</span>
-                        </div>
-                        <div className="personnel-badge">
-                          <span className="personnel-badge-dot" style={{ background: '#c99a3b' }} />
-                          <span className="personnel-badge-label">Non-Teaching</span>
-                          <span className="personnel-badge-value">{Number(dashStats.non_teaching_personnel) || 0}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+                </>
+              )}
             </>
+          ) : (
+            <div className="hero-fallback-media" aria-hidden="true">
+              <div className="hero-fallback-pattern" />
+            </div>
           )}
         </div>
       </section>
 
       {/* ============================================================
-          QUICK ACCESS
+          WELCOME STRIP — thin identity bar
           ============================================================ */}
-      <section className="section quick-links-section" ref={quickRef}>
+      <section className="welcome-strip">
+        <div className="container welcome-strip-inner">
+          <img src="/logo.png" alt="AANNHS Logo" className="welcome-logo" onError={(e) => { e.target.style.display = 'none'; }} />
+          <p className="welcome-strip-text">
+            <strong>Agapito A. Nasol National High School</strong> is committed to providing quality secondary education that
+            empowers every Nasolite to become a globally competitive, values-driven, and community-oriented individual.
+          </p>
+        </div>
+      </section>
+
+      {/* ============================================================
+          DASHBOARD — mosaic report board
+          ============================================================ */}
+      <section id="dashboard" className="section dashboard-section" ref={dashRef}>
         <div className="container">
-          <div className={`section-header reveal${quickInView ? ' in-view' : ''}`}>
-            <div className="section-header-inner">
-              <span className="section-eyebrow">Explore</span>
-              <h2 className="section-title">Quick Access</h2>
-              <p className="section-subtitle">Jump directly to the most visited sections of our portal.</p>
+          <div className={`sec-label reveal${dashInView ? ' in-view' : ''}`}>
+            <span className="sec-label-num">01</span>
+            <div className="sec-label-text">
+              <span className="sec-label-eyebrow">At a Glance</span>
+              <h2 className="sec-label-title">School Dashboard</h2>
+              <p className="sec-label-sub">Key statistics and performance indicators for the current school year.</p>
             </div>
-            <span className="title-accent title-accent-center" aria-hidden="true" />
+            <div className="sec-label-aside">
+              <span className="dash-live-badge"><span className="dash-live-dot" />Live Data</span>
+            </div>
           </div>
-          <div className={`quick-links-grid${quickInView ? ' in-view' : ''}`}>
-            {QUICK_LINKS.map(({ label, desc, path, Icon, accent }) => (
-              <Link key={label} to={path} className={`quick-link-card accent-${accent}`}>
-                <div className="ql-card-inner">
-                  <div className="ql-icon-wrap"><Icon className="ql-icon" /></div>
-                  <div className="ql-body">
-                    <span className="ql-label">{label}</span>
-                    <span className="ql-desc">{desc}</span>
+
+          {loadingDash ? (
+            <div className="bento">
+              {['enroll', 'teach', 'nontch', 'perf'].map((area) => (
+                <div key={area} className="bento-tile tile-skel" style={{ gridArea: area }}>
+                  <div className="skeleton skeleton-icon" /><div className="skeleton skeleton-num" /><div className="skeleton skeleton-label" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bento" ref={chartRef}>
+              {/* Enrollment — hero tile */}
+              <div className="bento-tile tile-enroll">
+                <span className="tile-eyebrow">This School Year</span>
+                <div className="tile-icon-wrap"><UsersIcon className="tile-icon" /></div>
+                <KpiValue value={dashStats.enrollment_count != null ? Number(dashStats.enrollment_count) : '—'} start={dashInView} />
+                <p className="kpi-label">Total Enrollment</p>
+              </div>
+
+              <div className="bento-tile tile-teach accent-blue">
+                <div className="tile-icon-wrap"><UserCheckIcon className="tile-icon" /></div>
+                <KpiValue value={dashStats.teaching_personnel != null ? Number(dashStats.teaching_personnel) : '—'} start={dashInView} />
+                <p className="kpi-label">Teaching Personnel</p>
+              </div>
+
+              <div className="bento-tile tile-nontch accent-green">
+                <div className="tile-icon-wrap"><BuildingIcon className="tile-icon" /></div>
+                <KpiValue value={dashStats.non_teaching_personnel != null ? Number(dashStats.non_teaching_personnel) : '—'} start={dashInView} />
+                <p className="kpi-label">Non-Teaching Personnel</p>
+              </div>
+
+              <div className="bento-tile tile-perf accent-purple">
+                <div className="tile-icon-wrap"><TrendingUpIcon className="tile-icon" /></div>
+                <KpiValue value={dashStats.performance_indicator ?? '—'} start={dashInView} small />
+                <p className="kpi-label">Performance Indicator</p>
+              </div>
+
+              <div className="bento-tile tile-avg accent-blue2">
+                <div className="tile-icon-wrap"><UsersRoundIcon className="tile-icon" /></div>
+                <KpiValue value={summaryStats.avgPerSection || '—'} start={dashInView} small />
+                <p className="kpi-label">Avg / Section</p>
+              </div>
+
+              {/* Grade-level breakdown chart */}
+              <div className="bento-tile tile-bars">
+                <div className="tile-head">
+                  <div className="tile-head-left">
+                    <CalendarIcon className="tile-head-icon" />
+                    <h4>Grade-Level Breakdown</h4>
                   </div>
-                  <div className="ql-arrow-wrap">
-                    <ArrowRightIcon className="ql-arrow" />
+                  <div className="tile-legend">
+                    <span className="legend-dot legend-dot-red" /><span>Sections</span>
+                    <span className="legend-dot legend-dot-gold" /><span>Classrooms</span>
                   </div>
                 </div>
-                <div className="ql-hover-gradient" />
+                <div className="tile-chart-body">
+                  {barChartData.length > 0 ? (
+                    <HorizontalBarChart data={barChartData} animate={chartInView} />
+                  ) : (
+                    <div className="chart-empty">No grade data available</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Personnel distribution donut */}
+              <div className="bento-tile tile-donut">
+                <div className="tile-head">
+                  <div className="tile-head-left">
+                    <PieChartIcon className="tile-head-icon" />
+                    <h4>Personnel Mix</h4>
+                  </div>
+                </div>
+                <div className="tile-chart-body tile-chart-body-pie">
+                  {pieChartData.length > 0 ? (
+                    <>
+                      <DonutChart data={pieChartData} animate={chartInView} />
+                      <div className="personnel-badges">
+                        <div className="personnel-badge">
+                          <span className="personnel-badge-dot" style={{ background: '#1565C0' }} />
+                          <span className="personnel-badge-label">Teaching</span>
+                          <span className="personnel-badge-value">{Number(dashStats.teaching_personnel) || 0}</span>
+                        </div>
+                        <div className="personnel-badge">
+                          <span className="personnel-badge-dot" style={{ background: '#43A047' }} />
+                          <span className="personnel-badge-label">Non-Teaching</span>
+                          <span className="personnel-badge-value">{Number(dashStats.non_teaching_personnel) || 0}</span>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="chart-empty">No personnel data available</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Summary strip tiles */}
+              <div className="bento-tile tile-secA">
+                <div className="tile-icon-wrap accent-blue2-wrap" style={{ background: 'var(--blue-pale)', color: 'var(--blue-primary)' }}>
+                  <BookOpenIcon className="tile-icon" />
+                </div>
+                <div>
+                  <div className="tile-sum-num">{summaryStats.totalSections}</div>
+                  <div className="tile-sum-label">Total Sections</div>
+                </div>
+              </div>
+              <div className="bento-tile tile-secB">
+                <div className="tile-icon-wrap" style={{ background: '#f0fdf4', color: 'var(--green)' }}>
+                  <BuildingIcon className="tile-icon" />
+                </div>
+                <div>
+                  <div className="tile-sum-num">{summaryStats.totalClassrooms}</div>
+                  <div className="tile-sum-label">Classrooms</div>
+                </div>
+              </div>
+              <div className="bento-tile tile-secC">
+                <div className="tile-icon-wrap" style={{ background: '#faf5ff', color: '#9333ea' }}>
+                  <SparkleIcon className="tile-icon" />
+                </div>
+                <div>
+                  <div className="tile-sum-num">Updated Termly</div>
+                  <div className="tile-sum-label">Figures reflect the current quarter</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ============================================================
+          QUICK ACCESS — directory list
+          ============================================================ */}
+      <section id="access" className="section quick-links-section" ref={quickRef}>
+        <div className="container">
+          <div className={`sec-label reveal${quickInView ? ' in-view' : ''}`}>
+            <span className="sec-label-num">02</span>
+            <div className="sec-label-text">
+              <span className="sec-label-eyebrow">Explore</span>
+              <h2 className="sec-label-title">Quick Access</h2>
+              <p className="sec-label-sub">Jump directly to the most visited sections of our portal.</p>
+            </div>
+          </div>
+          <div className={`directory-list reveal${quickInView ? ' in-view' : ''}`}>
+            {QUICK_LINKS.map(({ code, label, desc, path, Icon, accent }) => (
+              <Link key={label} to={path} className={`directory-row accent-${accent}`}>
+                <span className="directory-code">{code}</span>
+                <div className="directory-body">
+                  <span className="directory-label">{label}</span>
+                  <span className="directory-desc">{desc}</span>
+                </div>
+                <div className="directory-icon-wrap">
+                  <Icon className="directory-icon" />
+                </div>
+                <ArrowRightIcon className="directory-arrow" />
               </Link>
             ))}
           </div>
@@ -604,42 +652,40 @@ export default function HomePage() {
       </section>
 
       {/* ============================================================
-          RECENT PPAs
+          PROGRAMS & ACTIVITIES — featured story grid
           ============================================================ */}
       {ppas.length > 0 && (
-        <section className="section ppas-section" ref={ppaRef}>
+        <section id="programs" className="section ppas-section" ref={ppaRef}>
           <div className="container">
-            <div className="section-row">
-              <div className={`section-header section-header-left reveal${ppaInView ? ' in-view' : ''}`}>
-                <div className="section-header-inner">
-                  <span className="section-eyebrow">What's New</span>
-                  <h2 className="section-title">Programs &amp; Activities</h2>
-                </div>
-                <span className="title-accent title-accent-left" aria-hidden="true" />
+            <div className={`sec-label reveal${ppaInView ? ' in-view' : ''}`}>
+              <span className="sec-label-num">03</span>
+              <div className="sec-label-text">
+                <span className="sec-label-eyebrow">What's New</span>
+                <h2 className="sec-label-title">Programs &amp; Activities</h2>
               </div>
-              <Link to="/ppas" className="view-all-link">
+              <Link to="/ppas" className="view-all-link sec-label-aside">
                 <span>View All</span>
                 <ArrowRightIcon className="view-all-icon" />
               </Link>
             </div>
-            <div className={`ppas-grid${ppaInView ? ' in-view' : ''}`}>
-              {ppas.map(p => (
-                <div key={p.id} className="ppa-card">
+            <div className={`feature-grid reveal${ppaInView ? ' in-view' : ''}`}>
+              {ppas.map((p, i) => (
+                <Link key={p.id} to="/ppas" className={`ppa-card${i === 0 ? ' ppa-card-feature' : ''}`}>
                   {p.image_url && (
                     <div className="ppa-image-wrap">
                       <img src={getImageUrl(p.image_url)} alt={p.name} className="ppa-image" onError={e => e.target.style.display = 'none'} />
                       <div className="ppa-image-overlay" />
+                      {i === 0 && <span className="ppa-image-tag">Featured</span>}
                     </div>
                   )}
                   <div className="ppa-body">
                     <h3 className="ppa-name">{p.name}</h3>
-                    <Link to="/ppas" className="ppa-link">
+                    <span className="ppa-link">
                       <span>Read more</span>
                       <ArrowRightIcon className="ppa-link-icon" />
-                    </Link>
+                    </span>
                   </div>
-                  <div className="ppa-shine" />
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -647,27 +693,30 @@ export default function HomePage() {
       )}
 
       {/* ============================================================
-          CTA — with animated gradient background
+          CTA — diagonal split
           ============================================================ */}
-      <section className="cta-section" ref={ctaRef}>
-        <div className="cta-pattern" />
-        <div className="cta-glow-orb cta-glow-orb-1" />
-        <div className="cta-glow-orb cta-glow-orb-2" />
-        <div className={`container cta-inner reveal${ctaInView ? ' in-view' : ''}`}>
-          <div className="cta-text">
+      <section id="enroll" className="cta-section" ref={ctaRef}>
+        <div className="cta-pattern" aria-hidden="true" />
+        <div className={`cta-split reveal${ctaInView ? ' in-view' : ''}`}>
+          <div className="container cta-split-left">
             <div className="cta-badge">
               <SparkleIcon className="cta-badge-icon" />
               <span>Join Us</span>
             </div>
             <h2>Ready to join the AANNHS community?</h2>
             <p>Take the first step toward quality education. Enroll today or reach out to learn more about our programs and offerings.</p>
+            <div className="cta-actions">
+              <Link to="/admissions" className="btn btn-primary btn-lg">
+                <span>Enroll Now</span>
+                <ArrowRightIcon className="btn-icon" />
+              </Link>
+              <Link to="/contact" className="btn btn-outline-light btn-lg">Contact Us</Link>
+            </div>
           </div>
-          <div className="cta-actions">
-            <Link to="/admissions" className="btn btn-primary btn-lg">
-              <span>Enroll Now</span>
-              <ArrowRightIcon className="btn-icon" />
-            </Link>
-            <Link to="/contact" className="btn btn-outline-light btn-lg">Contact Us</Link>
+          <div className="cta-split-right">
+            <span className="cta-right-label">Section 04</span>
+            <div className="cta-right-num">{dashStats.enrollment_count != null ? Number(dashStats.enrollment_count).toLocaleString() : '—'}</div>
+            <p className="cta-right-sub">learners already part of the AANNHS community this school year.</p>
           </div>
         </div>
       </section>
