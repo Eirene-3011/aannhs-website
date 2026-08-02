@@ -52,7 +52,7 @@
   --dur-normal: 280ms;
   --dur-smooth: 400ms;
 
-  --masthead-height: 132px;
+  --masthead-height: 112px;
   --nav-height: 58px;
 }
 
@@ -181,13 +181,13 @@
 }
 
 .masthead-logo {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   flex-shrink: 0;
   object-fit: contain;
   border-radius: 50%;
   background: var(--white);
-  padding: 7px;
+  padding: 8px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
@@ -220,7 +220,7 @@
 .masthead-heading {
   font-family: var(--font-sans);
   color: var(--white);
-  font-size: clamp(1.05rem, 1.9vw, 1.4rem);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
   font-weight: 800;
   line-height: 1.22;
   letter-spacing: -0.02em;
@@ -240,60 +240,47 @@
   text-overflow: ellipsis;
 }
 
-.masthead-actions {
+.masthead-badges {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
+  padding-left: 22px;
+  position: relative;
 }
 
-/* Buttons — blue solid CTA + light ghost secondary, set against the
-   dark masthead; green stays reserved for the seam, tag, and nav
-   accents so it reads as a deliberate thread rather than noise */
-.btn {
+.masthead-badges::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.masthead-pill {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 10px 20px;
-  font-size: 0.83rem;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.68rem;
   font-weight: 700;
-  border-radius: var(--radius-md);
-  border: 1.5px solid transparent;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all var(--dur-normal) var(--ease-in-out);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-dark) 100%);
-  color: var(--white);
-  border-color: transparent;
-  box-shadow: 0 4px 16px rgba(13, 71, 161, 0.45);
+.masthead-pill-green {
+  background: rgba(67, 160, 71, 0.22);
+  border-color: rgba(129, 209, 133, 0.45);
+  color: #d6f5d8;
 }
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(13, 71, 161, 0.55);
-  filter: brightness(1.08);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.92);
-  border-color: rgba(255, 255, 255, 0.45);
-}
-
-.btn-ghost:hover {
-  border-color: var(--white);
-  color: var(--white);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.btn-icon { width: 15px; height: 15px; transition: transform var(--dur-normal) var(--ease-in-out); }
-.btn:hover .btn-icon { transform: translateX(3px); }
 
 /* ===================================================================
    NAVIGATION — segmented sticky bar, unchanged in spirit but tuned
@@ -329,6 +316,8 @@
 }
 
 .n-item { position: relative; display: flex; align-items: stretch; }
+
+.nav-drawer-brand { display: none; }
 
 .n-link {
   display: flex;
@@ -533,15 +522,16 @@
 @media (max-width: 1024px) {
   .n-link { padding: 0 10px; font-size: 0.74rem; }
   .n-link::after { left: 10px; right: 10px; }
-  :root { --masthead-height: 118px; }
+  :root { --masthead-height: 100px; }
   .masthead-logo { width: 52px; height: 52px; }
   .masthead-sub { display: none; }
+  .masthead-pill:not(.masthead-pill-green) { display: none; }
 }
 
 @media (max-width: 900px) {
-  :root { --masthead-height: 104px; }
+  :root { --masthead-height: 88px; }
 
-  .masthead-actions .btn-ghost { display: none; }
+  .masthead-badges { display: none; }
 
   .hamburger-btn { display: flex; }
 
@@ -565,6 +555,32 @@
   }
 
   .nav-links.is-mobile-open { right: 0; }
+
+  .nav-drawer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 24px 20px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-drawer-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--white);
+    padding: 4px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .nav-drawer-name {
+    color: var(--white);
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
 
   .n-item { width: 100%; flex-direction: column; align-items: stretch; }
 
@@ -627,14 +643,12 @@
 
 @media (max-width: 600px) {
   .container { padding: 0 16px; }
-  :root { --masthead-height: 92px; }
+  :root { --masthead-height: 76px; }
 
-  .masthead-logo { width: 44px; height: 44px; padding: 5px; }
-  .masthead-heading { font-size: clamp(0.92rem, 4.6vw, 1.05rem); }
+  .masthead-logo { width: 42px; height: 42px; padding: 5px; }
+  .masthead-heading { font-size: clamp(0.9rem, 4.6vw, 1.05rem); }
   .masthead-tag { display: none; }
   .masthead-plaque { gap: 12px; }
-  .masthead-actions .btn-primary { padding: 8px 14px; font-size: 0.76rem; }
-  .masthead-actions .btn-icon { display: none; }
 
   .nav-row { height: 52px; }
   .nav-links { width: 280px; padding: 72px 0 24px 0; }
