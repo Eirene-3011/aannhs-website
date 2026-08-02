@@ -177,24 +177,22 @@ export default function Header() {
     <>
       {/* ── Hero: framed image + floating identity card ─────────────── */}
       <div className="header-hero">
-        <div className="hero-canvas-frame">
-          <div className="hero-canvas">
-            {bannerLoading ? (
-              <div className="hero-skeleton" aria-hidden="true" />
-            ) : banner ? (
-              <img
-                src={getImageUrl(banner.image_url)}
-                alt={banner.title || ''}
-                className="hero-img"
-                onError={(e) => { e.target.style.display = 'none'; }}
-              />
-            ) : (
-              <div className="hero-fallback" aria-hidden="true">
-                <div className="hero-pattern" />
-              </div>
-            )}
-            <div className="hero-canvas-shade" />
-          </div>
+        <div className="hero-canvas">
+          {bannerLoading ? (
+            <div className="hero-skeleton" aria-hidden="true" />
+          ) : banner ? (
+            <img
+              src={getImageUrl(banner.image_url)}
+              alt={banner.title || ''}
+              className="hero-img"
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+          ) : (
+            <div className="hero-fallback" aria-hidden="true">
+              <div className="hero-pattern" />
+            </div>
+          )}
+          <div className="hero-canvas-shade" />
         </div>
 
         <div className="hero-card-row container">
