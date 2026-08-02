@@ -635,24 +635,6 @@ export default function HomePage() {
           </div>
         </section>
       )}
-
-      {/* ============================================================
-          CTA — diagonal split
-          ============================================================ */}
-      <section id="enroll" className="cta-section" ref={ctaRef}>
-        <div className="cta-pattern" aria-hidden="true" />
-        <div className={`cta-split reveal${ctaInView ? ' in-view' : ''}`}>
-          <div className="container cta-split-left">
-            <div className="cta-badge">
-              <SparkleIcon className="cta-badge-icon" />
-              <span>Join Us</span>
-            </div>
-            <h2>Ready to join the AANNHS community?</h2>
-            <p>Take the first step toward quality education. Enroll today or reach out to learn more about our programs and offerings.</p>
-            )}
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
