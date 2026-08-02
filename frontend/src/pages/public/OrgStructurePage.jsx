@@ -139,7 +139,7 @@ export default function OrgStructurePage() {
                     flexWrap: 'wrap',
                     border: 'none',
                     cursor: 'pointer',
-                    background: 'linear-gradient(120deg, var(--red-dark), var(--red-primary))',
+                    background: 'linear-gradient(120deg, var(--blue-dark), var(--blue-primary))',
                   }}
                 >
                   {schoolHead?.photo_url ? (
@@ -190,7 +190,7 @@ export default function OrgStructurePage() {
                     flexWrap: 'wrap',
                     border: 'none',
                     cursor: 'pointer',
-                    background: 'linear-gradient(120deg, var(--red-dark), var(--red-primary))',
+                    background: 'linear-gradient(120deg, var(--blue-dark), var(--blue-primary))',
                   }}
                 >
                   {adminOfficer.photo_url ? (
@@ -252,9 +252,9 @@ export default function OrgStructurePage() {
               {Object.entries(grouped).map(([gradeLevel, members]) => (
                 <div key={gradeLevel}>
                   <h3 style={{
-                    fontWeight: 700, fontSize: '0.95rem', color: 'var(--red-primary)',
+                    fontWeight: 700, fontSize: '0.95rem', color: 'var(--blue-primary)',
                     textTransform: 'uppercase', letterSpacing: '0.06em',
-                    borderBottom: '2px solid var(--red-pale)', paddingBottom: 8, marginBottom: 16
+                    borderBottom: '2px solid var(--blue-pale)', paddingBottom: 8, marginBottom: 16
                   }}>
                     {gradeLevel}
                     <span style={{ fontSize: '0.78rem', fontWeight: 400, color: 'var(--gray-400)', marginLeft: 8, textTransform: 'none' }}>
@@ -342,7 +342,7 @@ export default function OrgStructurePage() {
               {selected.department_grade_level && (
                 <div className="staff-modal-meta-item">
                   <span className="staff-modal-meta-label">Grade Level</span>
-                  <span className="badge badge-red">{selected.department_grade_level}</span>
+                  <span className="badge badge-blue">{selected.department_grade_level}</span>
                 </div>
               )}
               {!!selected.years_in_service && (
