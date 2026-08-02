@@ -509,6 +509,11 @@
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   z-index: 998;
+  display: none;
+}
+
+.mobile-backdrop.is-visible {
+  display: block;
 }
 
 /* ===================================================================
@@ -551,7 +556,7 @@
     justify-content: flex-start;
     align-items: stretch;
     padding: 80px 0 32px 0;
-    z-index: 999;
+    z-index: 9999;
     box-shadow: -10px 0 40px rgba(0, 0, 0, 0.35);
     transition: right var(--dur-smooth) var(--ease-out);
     overflow-y: auto;
@@ -643,6 +648,11 @@
   .dd-item:hover .dd-item-arrow { opacity: 1; color: var(--green-light); }
 
   .h-line { width: 20px; }
+
+  /* Ensure backdrop sits BELOW the nav drawer */
+  .mobile-backdrop {
+    z-index: 9998;
+  }
 }
 
 /* Large phones */
