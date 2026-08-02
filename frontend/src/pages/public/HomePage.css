@@ -973,7 +973,7 @@ img, svg { max-width: 100%; height: auto; }
 .cta-badge-icon { width: 13px; height: 13px; color: var(--green-light); }
 
 .cta-split-left h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; margin-bottom: 16px; line-height: 1.15; letter-spacing: -0.02em; max-width: 480px; }
-.cta-split-left p { font-size: 1rem; color: rgba(255, 255, 255, 0.78); line-height: 1.65; max-width: 460px; }
+.cta-split-left p { font-size: 1rem; color: rgba(255, 255, 255, 0.78); line-height: 1.7; max-width: 440px; margin-bottom: 4px; }
 
 .cta-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
 
@@ -992,6 +992,8 @@ img, svg { max-width: 100%; height: auto; }
 /* ================================================================
    Responsive adjustments
    ================================================================ */
+
+/* Tablet landscape / small desktop */
 @media (max-width: 1024px) {
   .hero-split { grid-template-columns: 1fr; }
   .hero-panel { padding: 52px 32px; }
@@ -1013,6 +1015,7 @@ img, svg { max-width: 100%; height: auto; }
   .container { padding: 0 20px; }
 }
 
+/* Tablet portrait */
 @media (max-width: 768px) {
   :root { --nav-height: 64px; }
   .section { padding: 64px 0; }
@@ -1046,6 +1049,7 @@ img, svg { max-width: 100%; height: auto; }
   .cta-actions .btn { flex: 1; }
 }
 
+/* Mobile landscape / large phones */
 @media (max-width: 600px) {
   .hero-media { min-height: 220px; }
   .hero-badge-row { margin-bottom: 16px; }
@@ -1074,6 +1078,7 @@ img, svg { max-width: 100%; height: auto; }
   .btn-lg { padding: 13px 26px; }
 }
 
+/* Small mobile phones */
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
   .tile-secC { flex-direction: column; text-align: center; gap: 8px; }
@@ -1083,6 +1088,7 @@ img, svg { max-width: 100%; height: auto; }
   .welcome-title { font-size: clamp(1.35rem, 7vw, 1.8rem); }
 }
 
+/* Extra small screens */
 @media (max-width: 360px) {
   .hero-media { min-height: 190px; }
   .hero-badge-pill { font-size: 0.66rem; padding: 4px 10px; }
