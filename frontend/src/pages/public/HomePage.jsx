@@ -263,18 +263,18 @@ function HorizontalBarChart({ data, animate }) {
               <div className="row-label">{d.name}</div>
               <div className="row-bars-container">
                 <div className="horizontal-bar-group">
-                  <div
-                    className="h-bar h-bar-sections"
-                    style={{
+                  <div 
+                    className="h-bar h-bar-sections" 
+                    style={{ 
                       width: animate ? `${secW}%` : '0%',
                       transitionDelay: `${i * 0.05}s`
                     }}
                   >
                     <span className="h-bar-value">{d.sections}</span>
                   </div>
-                  <div
-                    className="h-bar h-bar-classrooms"
-                    style={{
+                  <div 
+                    className="h-bar h-bar-classrooms" 
+                    style={{ 
                       width: animate ? `${clsW}%` : '0%',
                       transitionDelay: `${i * 0.05 + 0.1}s`
                     }}
@@ -374,7 +374,7 @@ export default function HomePage() {
   return (
     <div className="homepage">
       {/* ============================================================
-          HERO — Editorial cinematic slideshow
+          HERO — Cinematic slideshow with Ken Burns zoom
           ============================================================ */}
       <section
         className="hero-slideshow"
@@ -390,33 +390,15 @@ export default function HomePage() {
                 <div key={i} className={`hero-slide${i === currentBanner ? ' active' : ''}`} aria-hidden={i !== currentBanner}>
                   <img src={getImageUrl(b.image_url)} alt={b.title || ''} className="hero-slide-img" onError={(e) => { e.target.style.display = 'none'; }} />
                   <div className="hero-slide-overlay" />
+                  <div className="hero-ken-burns" />
                 </div>
               ))}
             </div>
 
-            {/* Editorial hero content */}
-            <div className="hero-content-overlay">
-              <div className="hero-content-inner">
-                <div className="hero-badge-row">
-                  <span className="hero-badge-pill">
-                    <span className="hero-badge-dot" /> AANNHS Portal
-                  </span>
-                </div>
-                <h1 className="hero-headline">
-                  Excellence in<br /><span className="hero-headline-accent">Education</span>
-                </h1>
-                <p className="hero-tagline">
-                  Nurturing minds, building character, and shaping the leaders of tomorrow.
-                </p>
-                <div className="hero-actions">
-                  <Link to="/admissions" className="btn btn-primary btn-lg">
-                    <span>Enroll Now</span>
-                    <ArrowRightIcon className="btn-icon" />
-                  </Link>
-                  <Link to="/about" className="btn btn-ghost-light btn-lg">Discover AANNHS</Link>
-                </div>
-              </div>
-            </div>
+            {/* Vignette overlay for cinematic depth */}
+            <div className="hero-vignette" />
+
+            {/* Hero content overlay removed as requested */}
 
             {banners.length > 1 && (
               <>
@@ -438,32 +420,25 @@ export default function HomePage() {
         ) : (
           <div className="hero-fallback" aria-hidden="true">
             <div className="hero-fallback-pattern" />
-            <div className="hero-content-overlay">
-              <div className="hero-content-inner">
-                <div className="hero-badge-row">
-                  <span className="hero-badge-pill"><span className="hero-badge-dot" /> AANNHS Portal</span>
-                </div>
-                <h1 className="hero-headline">Excellence in<br /><span className="hero-headline-accent">Education</span></h1>
-                <p className="hero-tagline">Nurturing minds, building character, and shaping the leaders of tomorrow.</p>
-                <div className="hero-actions">
-                  <Link to="/admissions" className="btn btn-primary btn-lg"><span>Enroll Now</span><ArrowRightIcon className="btn-icon" /></Link>
-                  <Link to="/about" className="btn btn-ghost-light btn-lg">Discover AANNHS</Link>
-                </div>
-              </div>
-            </div>
           </div>
         )}
       </section>
 
+      {/* Ribbon divider */}
+      <div className="ribbon-divider" aria-hidden="true" />
+
       {/* ============================================================
-          SCHOOL DASHBOARD — Bento KPI Cards + Charts
+          SCHOOL DASHBOARD — KPI Cards + Charts
           ============================================================ */}
-      <section className="section dashboard-section" ref__={dashRef}>
+      <section className="section dashboard-section" ref={dashRef}>
         <div className="container">
           <div className={`section-header reveal${dashInView ? ' in-view' : ''}`}>
-            <span className="section-eyebrow">At a Glance</span>
-            <h2 className="section-title">School Dashboard</h2>
-            <p className="section-subtitle">Key statistics and performance indicators for the current school year.</p>
+            <div className="section-header-inner">
+              <span className="section-eyebrow">At a Glance</span>
+              <h2 className="section-title">School Dashboard</h2>
+              <p className="section-subtitle">Key statistics and performance indicators for the current school year.</p>
+            </div>
+            <span className="title-accent title-accent-center" aria-hidden="true" />
           </div>
 
           {loadingDash ? (
@@ -482,13 +457,11 @@ export default function HomePage() {
                   const { Icon, accent } = DASH_ICONS[i];
                   return (
                     <div key={item.label} className={`kpi-card accent-${accent}`}>
-                      <div className="kpi-top">
-                        <div className="kpi-icon-wrap"><Icon className="kpi-icon" /></div>
-                        <span className="kpi-index">0{i + 1}</span>
-                      </div>
+                      <div className="kpi-glow" />
+                      <div className="kpi-icon-wrap"><Icon className="kpi-icon" /></div>
                       <KpiValue value={item.value} start={dashInView} small={item.small} />
                       <p className="kpi-label">{item.label}</p>
-                      <div className="kpi-bar" />
+                      <div className="kpi-hover-shine" />
                     </div>
                   );
                 })}
@@ -520,15 +493,17 @@ export default function HomePage() {
               </div>
 
               {/* ─── Charts Section ──────────────────────────────── */}
-              <div className={`charts-section${chartInView ? ' in-view' : ''}`} ref__={chartRef}>
+              <div className={`charts-section${chartInView ? ' in-view' : ''}`} ref={chartRef}>
                 <div className="charts-header">
                   <div className="charts-header-left">
-                    <span className="section-eyebrow">Visual Insights</span>
-                    <h3 className="charts-title">Enrollment &amp; Personnel Analytics</h3>
+                    <div className="charts-header-row">
+                      <span className="section-eyebrow">Visual Insights</span>
+                      <h3 className="charts-title">Enrollment & Personnel Analytics</h3>
+                    </div>
                     <p className="charts-subtitle">Grade-level distribution and staff composition at a glance.</p>
                   </div>
                   <div className="charts-legend-badge">
-                    <span className="live-pulse" />
+                    <PieChartIcon className="charts-badge-icon" />
                     <span>Live Data</span>
                   </div>
                 </div>
@@ -598,25 +573,30 @@ export default function HomePage() {
       {/* ============================================================
           QUICK ACCESS
           ============================================================ */}
-      <section className="section quick-links-section" ref__={quickRef}>
+      <section className="section quick-links-section" ref={quickRef}>
         <div className="container">
           <div className={`section-header reveal${quickInView ? ' in-view' : ''}`}>
-            <span className="section-eyebrow">Explore</span>
-            <h2 className="section-title">Quick Access</h2>
-            <p className="section-subtitle">Jump directly to the most visited sections of our portal.</p>
+            <div className="section-header-inner">
+              <span className="section-eyebrow">Explore</span>
+              <h2 className="section-title">Quick Access</h2>
+              <p className="section-subtitle">Jump directly to the most visited sections of our portal.</p>
+            </div>
+            <span className="title-accent title-accent-center" aria-hidden="true" />
           </div>
           <div className={`quick-links-grid${quickInView ? ' in-view' : ''}`}>
             {QUICK_LINKS.map(({ label, desc, path, Icon, accent }) => (
               <Link key={label} to={path} className={`quick-link-card accent-${accent}`}>
-                <div className="ql-accent-bar" />
-                <div className="ql-icon-wrap"><Icon className="ql-icon" /></div>
-                <div className="ql-body">
-                  <span className="ql-label">{label}</span>
-                  <span className="ql-desc">{desc}</span>
+                <div className="ql-card-inner">
+                  <div className="ql-icon-wrap"><Icon className="ql-icon" /></div>
+                  <div className="ql-body">
+                    <span className="ql-label">{label}</span>
+                    <span className="ql-desc">{desc}</span>
+                  </div>
+                  <div className="ql-arrow-wrap">
+                    <ArrowRightIcon className="ql-arrow" />
+                  </div>
                 </div>
-                <div className="ql-arrow-wrap">
-                  <ArrowRightIcon className="ql-arrow" />
-                </div>
+                <div className="ql-hover-gradient" />
               </Link>
             ))}
           </div>
@@ -627,12 +607,15 @@ export default function HomePage() {
           RECENT PPAs
           ============================================================ */}
       {ppas.length > 0 && (
-        <section className="section ppas-section" ref__={ppaRef}>
+        <section className="section ppas-section" ref={ppaRef}>
           <div className="container">
             <div className="section-row">
               <div className={`section-header section-header-left reveal${ppaInView ? ' in-view' : ''}`}>
-                <span className="section-eyebrow">What's New</span>
-                <h2 className="section-title">Programs &amp; Activities</h2>
+                <div className="section-header-inner">
+                  <span className="section-eyebrow">What's New</span>
+                  <h2 className="section-title">Programs &amp; Activities</h2>
+                </div>
+                <span className="title-accent title-accent-left" aria-hidden="true" />
               </div>
               <Link to="/ppas" className="view-all-link">
                 <span>View All</span>
@@ -655,6 +638,7 @@ export default function HomePage() {
                       <ArrowRightIcon className="ppa-link-icon" />
                     </Link>
                   </div>
+                  <div className="ppa-shine" />
                 </div>
               ))}
             </div>
@@ -665,7 +649,7 @@ export default function HomePage() {
       {/* ============================================================
           CTA — with animated gradient background
           ============================================================ */}
-      <section className="cta-section" ref__={ctaRef}>
+      <section className="cta-section" ref={ctaRef}>
         <div className="cta-pattern" />
         <div className="cta-glow-orb cta-glow-orb-1" />
         <div className="cta-glow-orb cta-glow-orb-2" />
@@ -679,7 +663,7 @@ export default function HomePage() {
             <p>Take the first step toward quality education. Enroll today or reach out to learn more about our programs and offerings.</p>
           </div>
           <div className="cta-actions">
-            <Link to="/admissions" className="btn btn-light btn-lg">
+            <Link to="/admissions" className="btn btn-primary btn-lg">
               <span>Enroll Now</span>
               <ArrowRightIcon className="btn-icon" />
             </Link>
