@@ -260,6 +260,10 @@ export default function HomePage() {
   const [autoplay, setAutoplay] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
 
+  /* ── Live Visitor Counter ── */
+  const [visitorStats, setVisitorStats] = useState({ active: 0, total: 0, today: 0, unique: 0 });
+  const [vcRefreshing, setVcRefreshing] = useState(false);
+
   useEffect(() => {
     api.get('/school-dashboard').then(r => {
       setDashboard(r.data);
@@ -278,6 +282,45 @@ export default function HomePage() {
   }, [banners.length, autoplay]);
 
   const goToBanner = useCallback((i) => { setCurrentBanner(i); setAutoplay(false); }, []);
+
+  /* ── Visitor counter helpers & effects ──────────────────── */
+  function getOrCreateToken(key) {
+    let t = localStorage.getItem(key);
+    if (!t) {
+      t = Math.random().toString(36).slice(2) + Date.now().toString(36) + Math.random().toString(36).slice(2);
+      try { localStorage.setItem(key, t); } catch (_) {}
+    }
+    return t;
+  }
+
+  useEffect(() => {
+    const sessionToken = getOrCreateToken('_aannhs_sess');
+    const visitorToken = getOrCreateToken('_aannhs_vid');
+
+    const ping = () => {
+      api.post('/visitor-stats/ping', { sessionToken, visitorToken }).catch(() => {});
+    };
+    const fetchStats = () => {
+      setVcRefreshing(true);
+      api.get('/visitor-stats')
+        .then(r => setVisitorStats(r.data || { active: 0, total: 0, today: 0, unique: 0 }))
+        .catch(() => {})
+        .finally(() => setVcRefreshing(false));
+    };
+
+    // Initial calls
+    ping();
+    fetchStats();
+
+    // Refresh every 30 s
+    const pingTimer  = setInterval(ping, 30000);
+    const statsTimer = setInterval(fetchStats, 30000);
+
+    return () => {
+      clearInterval(pingTimer);
+      clearInterval(statsTimer);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const prevBanner = useCallback(() => setCurrentBanner(p => (p - 1 + banners.length) % banners.length), [banners.length]);
   const nextBanner = useCallback(() => setCurrentBanner(p => (p + 1) % banners.length), [banners.length]);
   const scrollTo = useCallback((id) => {
@@ -513,6 +556,52 @@ export default function HomePage() {
                   value={s.enrollment_status || '—'}
                   accent={s.enrollment_status === 'Open' ? 'green' : 'gray'}
                   start={overviewInView} />
+              </div>
+
+              {/* ── Live Visitor Counter ───────────────────── */}
+              <div className="visitor-counter">
+                <div className="vc-header">
+                  <div className="vc-title-wrap">
+                    <div className="vc-title-icon">
+                      <ActivityIcon />
+                    </div>
+                    <div>
+                      <div className="vc-title-text">Live Visitor Counter</div>
+                      <div className="vc-title-sub">Real-time site traffic analytics</div>
+                    </div>
+                  </div>
+                  <span className="vc-live-badge"><span className="vc-live-dot" />Live</span>
+                </div>
+                <div className="vc-grid">
+                  {/* Active Visitors */}
+                  <div className="vc-card vc-card-active">
+                    <div className="vc-icon vc-icon-active"><ZapIcon /></div>
+                    <div className={`vc-num vc-num-active`}>{visitorStats.active.toLocaleString()}</div>
+                    <div className="vc-label">Active Visitors</div>
+                  </div>
+                  {/* Total Visits */}
+                  <div className="vc-card">
+                    <div className="vc-icon vc-icon-total"><TrendingUpIcon /></div>
+                    <div className="vc-num">{visitorStats.total.toLocaleString()}</div>
+                    <div className="vc-label">Total Visits</div>
+                  </div>
+                  {/* Today's Visitors */}
+                  <div className="vc-card">
+                    <div className="vc-icon vc-icon-today"><CalendarIcon /></div>
+                    <div className="vc-num">{visitorStats.today.toLocaleString()}</div>
+                    <div className="vc-label">Today's Visitors</div>
+                  </div>
+                  {/* Unique Visitors */}
+                  <div className="vc-card">
+                    <div className="vc-icon vc-icon-unique"><UsersIcon /></div>
+                    <div className="vc-num">{visitorStats.unique.toLocaleString()}</div>
+                    <div className="vc-label">Unique Visitors</div>
+                  </div>
+                </div>
+                <div className="vc-footer">
+                  <svg className={`vc-refresh-icon${vcRefreshing ? ' vc-spin' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                  Updates every 30 seconds &nbsp;·&nbsp; Active window: 2 min
+                </div>
               </div>
             </div>
           )}
