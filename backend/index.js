@@ -62,6 +62,7 @@ app.use('/api/school-heads',                      require('./routes/schoolHeads'
 // ✅ NEW: Alumni & News
 app.use('/api/alumni',                            require('./routes/alumni'));
 app.use('/api/news-updates',                      require('./routes/newsAndUpdates'));
+app.use("/api/visitor-stats",                     require("./routes/visitorStats"));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', app: 'AANNHS API' }));
