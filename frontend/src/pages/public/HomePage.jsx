@@ -24,6 +24,7 @@ const PhoneIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24
 const ArrowRightIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
 const ChevronLeftIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="15 18 9 12 15 6"/></svg>;
 const ChevronRightIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="9 18 15 12 9 6"/></svg>;
+const ChevronDownIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="6 9 12 15 18 9"/></svg>;
 const PauseIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...p}><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>;
 const PlayIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...p}><path d="M8 5v14l11-7z"/></svg>;
 const CalendarIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
@@ -40,6 +41,7 @@ const GlobeIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24
 const AwardIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>;
 const SparkleIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3z"/></svg>;
 const ZapIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+const RefreshIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>;
 
 const QUICK_LINKS = [
   { code: 'AB', label: 'About AANNHS', desc: 'School profile & history', path: '/about', Icon: SchoolIcon, accent: 'blue' },
@@ -247,6 +249,77 @@ function GaugeChart({ value, max = 100, color, label, animate }) {
   );
 }
 
+/* ─── Live Visitor Pulse — compact nav-bar popover ─────────
+   Replaces the old full-width gradient block. Docked in the
+   sticky dashboard nav so it stays visible while scrolling
+   without competing with the Overview KPIs.                 */
+function VisitorPulse({ stats, refreshing }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const STATS = [
+    { key: 'active', label: 'Active now', icon: ZapIcon, active: true },
+    { key: 'total', label: 'Total visits', icon: TrendingUpIcon },
+    { key: 'today', label: 'Today', icon: CalendarIcon },
+    { key: 'unique', label: 'Unique', icon: UsersIcon },
+  ];
+
+  return (
+    <div className="nav-pulse-wrap" ref={wrapRef}>
+      <button
+        type="button"
+        className="nav-pulse-trigger"
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen(o => !o)}
+      >
+        <span className="nav-pulse-dot" />
+        <span className="nav-pulse-num">{(stats.active || 0).toLocaleString()}</span>
+        <span className="nav-pulse-word">Online</span>
+        <ChevronDownIcon className="nav-pulse-chevron" />
+      </button>
+
+      {open && (
+        <div className="nav-pulse-panel" role="dialog" aria-label="Live site traffic">
+          <div className="npp-header">
+            <div className="npp-title">
+              <span className="npp-title-dot" />
+              <span className="npp-title-text">Live Site Traffic</span>
+            </div>
+            <RefreshIcon className={`npp-refresh${refreshing ? ' spinning' : ''}`} />
+          </div>
+          <div className="npp-grid">
+            {STATS.map(({ key, label, icon: IconComp, active }) => (
+              <div key={key} className={`npp-stat${active ? ' npp-stat-active' : ''}`}>
+                <span className="npp-stat-icon"><IconComp /></span>
+                <div>
+                  <div className="npp-stat-num">{(stats[key] || 0).toLocaleString()}</div>
+                  <div className="npp-stat-label">{label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="npp-footer">Updates every 30s · Active window: 2 min</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ════════════════════════════════════════════════════════════ */
@@ -260,7 +333,7 @@ export default function HomePage() {
   const [autoplay, setAutoplay] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
 
-  /* ── Live Visitor Counter ── */
+  /* ── Live Visitor Counter (data only — rendered via <VisitorPulse/> in the nav bar) ── */
   const [visitorStats, setVisitorStats] = useState({ active: 0, total: 0, today: 0, unique: 0 });
   const [vcRefreshing, setVcRefreshing] = useState(false);
 
@@ -477,25 +550,31 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════
-          DASHBOARD NAV — quick section jump bar
+          DASHBOARD NAV — quick section jump bar +
+          live visitor pulse widget (docked, always visible)
           ══════════════════════════════════════════════════ */}
       <nav className="dash-nav-bar">
         <div className="container">
-          <div className="dash-nav-inner">
-            <span className="dash-nav-label">Dashboard</span>
-            {[
-              { id: 'overview', label: 'Overview' },
-              { id: 'access', label: 'Access' },
-              { id: 'quality', label: 'Quality' },
-              { id: 'equity', label: 'Equity' },
-              { id: 'wellbeing', label: 'Well-Being' },
-              { id: 'hr', label: 'HR' },
-              { id: 'governance', label: 'Governance' },
-              { id: 'accountability', label: 'Accountability' },
-            ].map(s => (
-              <button key={s.id} className="dash-nav-btn" onClick={() => scrollTo(s.id)}>{s.label}</button>
-            ))}
-            {lastUpdated && <span className="dash-updated">Updated {fmtDate(lastUpdated)}</span>}
+          <div className="dash-nav-row">
+            <div className="dash-nav-inner">
+              <span className="dash-nav-label">Dashboard</span>
+              {[
+                { id: 'overview', label: 'Overview' },
+                { id: 'access', label: 'Access' },
+                { id: 'quality', label: 'Quality' },
+                { id: 'equity', label: 'Equity' },
+                { id: 'wellbeing', label: 'Well-Being' },
+                { id: 'hr', label: 'HR' },
+                { id: 'governance', label: 'Governance' },
+                { id: 'accountability', label: 'Accountability' },
+              ].map(s => (
+                <button key={s.id} className="dash-nav-btn" onClick={() => scrollTo(s.id)}>{s.label}</button>
+              ))}
+            </div>
+            <div className="dash-nav-right">
+              {lastUpdated && <span className="dash-updated">Updated {fmtDate(lastUpdated)}</span>}
+              <VisitorPulse stats={visitorStats} refreshing={vcRefreshing} />
+            </div>
           </div>
         </div>
       </nav>
@@ -556,52 +635,6 @@ export default function HomePage() {
                   value={s.enrollment_status || '—'}
                   accent={s.enrollment_status === 'Open' ? 'green' : 'gray'}
                   start={overviewInView} />
-              </div>
-
-              {/* ── Live Visitor Counter ───────────────────── */}
-              <div className="visitor-counter">
-                <div className="vc-header">
-                  <div className="vc-title-wrap">
-                    <div className="vc-title-icon">
-                      <ActivityIcon />
-                    </div>
-                    <div>
-                      <div className="vc-title-text">Live Visitor Counter</div>
-                      <div className="vc-title-sub">Real-time site traffic analytics</div>
-                    </div>
-                  </div>
-                  <span className="vc-live-badge"><span className="vc-live-dot" />Live</span>
-                </div>
-                <div className="vc-grid">
-                  {/* Active Visitors */}
-                  <div className="vc-card vc-card-active">
-                    <div className="vc-icon vc-icon-active"><ZapIcon /></div>
-                    <div className={`vc-num vc-num-active`}>{visitorStats.active.toLocaleString()}</div>
-                    <div className="vc-label">Active Visitors</div>
-                  </div>
-                  {/* Total Visits */}
-                  <div className="vc-card">
-                    <div className="vc-icon vc-icon-total"><TrendingUpIcon /></div>
-                    <div className="vc-num">{visitorStats.total.toLocaleString()}</div>
-                    <div className="vc-label">Total Visits</div>
-                  </div>
-                  {/* Today's Visitors */}
-                  <div className="vc-card">
-                    <div className="vc-icon vc-icon-today"><CalendarIcon /></div>
-                    <div className="vc-num">{visitorStats.today.toLocaleString()}</div>
-                    <div className="vc-label">Today's Visitors</div>
-                  </div>
-                  {/* Unique Visitors */}
-                  <div className="vc-card">
-                    <div className="vc-icon vc-icon-unique"><UsersIcon /></div>
-                    <div className="vc-num">{visitorStats.unique.toLocaleString()}</div>
-                    <div className="vc-label">Unique Visitors</div>
-                  </div>
-                </div>
-                <div className="vc-footer">
-                  <svg className={`vc-refresh-icon${vcRefreshing ? ' vc-spin' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                  Updates every 30 seconds &nbsp;·&nbsp; Active window: 2 min
-                </div>
               </div>
             </div>
           )}
