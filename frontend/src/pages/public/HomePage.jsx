@@ -40,6 +40,7 @@ const GlobeIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24
 const AwardIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>;
 const SparkleIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3z"/></svg>;
 const ZapIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+const RefreshIcon = (p) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>;
 
 const QUICK_LINKS = [
   { code: 'AB', label: 'About AANNHS', desc: 'School profile & history', path: '/about', Icon: SchoolIcon, accent: 'blue' },
@@ -243,6 +244,44 @@ function GaugeChart({ value, max = 100, color, label, animate }) {
         <text x="60" y="58" textAnchor="middle" fill="var(--gray-900)" fontSize="14" fontWeight="800">{value}%</text>
       </svg>
       <p className="gauge-label">{label}</p>
+    </div>
+  );
+}
+
+/* ─── Live Stats Ticker (relocated visitor counter) ───────── */
+function StatsTicker({ stats, refreshing }) {
+  const items = [
+    { Icon: ZapIcon, num: stats.active, label: 'Active now', tone: 'live' },
+    { Icon: TrendingUpIcon, num: stats.today, label: "Today's visits" },
+    { Icon: UsersIcon, num: stats.unique, label: 'Unique visitors' },
+    { Icon: BarChartIcon, num: stats.total, label: 'All-time visits' },
+  ];
+  return (
+    <div className="stats-ticker">
+      <div className="container">
+        <div className="stats-ticker-inner">
+          <span className="stats-ticker-tag">
+            <span className="stats-ticker-dot" />
+            Site Traffic
+          </span>
+          <div className="stats-ticker-metrics">
+            {items.map((it, i) => (
+              <React.Fragment key={it.label}>
+                {i > 0 && <span className="stats-ticker-divider" aria-hidden="true" />}
+                <div className={`stats-ticker-item${it.tone === 'live' ? ' is-live' : ''}`}>
+                  <it.Icon className="stats-ticker-icon" />
+                  <span className="stats-ticker-num">{(it.num || 0).toLocaleString()}</span>
+                  <span className="stats-ticker-text">{it.label}</span>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+          <span className="stats-ticker-meta">
+            <RefreshIcon className={`stats-ticker-refresh${refreshing ? ' is-spinning' : ''}`} />
+            Updates every 30s
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -477,6 +516,14 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════
+          LIVE STATS TICKER — relocated visitor counter
+          A slim, low-key strip: site-wide traffic context
+          belongs at the page level, not buried in one KPI
+          section, and shouldn't compete visually with it.
+          ══════════════════════════════════════════════════ */}
+      <StatsTicker stats={visitorStats} refreshing={vcRefreshing} />
+
+      {/* ══════════════════════════════════════════════════
           DASHBOARD NAV — quick section jump bar
           ══════════════════════════════════════════════════ */}
       <nav className="dash-nav-bar">
@@ -556,52 +603,6 @@ export default function HomePage() {
                   value={s.enrollment_status || '—'}
                   accent={s.enrollment_status === 'Open' ? 'green' : 'gray'}
                   start={overviewInView} />
-              </div>
-
-              {/* ── Live Visitor Counter ───────────────────── */}
-              <div className="visitor-counter">
-                <div className="vc-header">
-                  <div className="vc-title-wrap">
-                    <div className="vc-title-icon">
-                      <ActivityIcon />
-                    </div>
-                    <div>
-                      <div className="vc-title-text">Live Visitor Counter</div>
-                      <div className="vc-title-sub">Real-time site traffic analytics</div>
-                    </div>
-                  </div>
-                  <span className="vc-live-badge"><span className="vc-live-dot" />Live</span>
-                </div>
-                <div className="vc-grid">
-                  {/* Active Visitors */}
-                  <div className="vc-card vc-card-active">
-                    <div className="vc-icon vc-icon-active"><ZapIcon /></div>
-                    <div className={`vc-num vc-num-active`}>{visitorStats.active.toLocaleString()}</div>
-                    <div className="vc-label">Active Visitors</div>
-                  </div>
-                  {/* Total Visits */}
-                  <div className="vc-card">
-                    <div className="vc-icon vc-icon-total"><TrendingUpIcon /></div>
-                    <div className="vc-num">{visitorStats.total.toLocaleString()}</div>
-                    <div className="vc-label">Total Visits</div>
-                  </div>
-                  {/* Today's Visitors */}
-                  <div className="vc-card">
-                    <div className="vc-icon vc-icon-today"><CalendarIcon /></div>
-                    <div className="vc-num">{visitorStats.today.toLocaleString()}</div>
-                    <div className="vc-label">Today's Visitors</div>
-                  </div>
-                  {/* Unique Visitors */}
-                  <div className="vc-card">
-                    <div className="vc-icon vc-icon-unique"><UsersIcon /></div>
-                    <div className="vc-num">{visitorStats.unique.toLocaleString()}</div>
-                    <div className="vc-label">Unique Visitors</div>
-                  </div>
-                </div>
-                <div className="vc-footer">
-                  <svg className={`vc-refresh-icon${vcRefreshing ? ' vc-spin' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                  Updates every 30 seconds &nbsp;·&nbsp; Active window: 2 min
-                </div>
               </div>
             </div>
           )}
