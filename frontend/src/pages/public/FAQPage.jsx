@@ -50,10 +50,11 @@ export default function FAQPage() {
                     <span style={{ flexShrink: 0, color: 'var(--red-primary)' }}>{open === i ? '▲' : '▼'}</span>
                   </button>
                   {open === i && (
-                    <div style={{ padding: '14px 20px 18px', borderTop: '1px solid var(--gray-200)', background: 'white', fontSize: '0.88rem', color: 'var(--gray-700)', lineHeight: 1.7 }}>
-                      {faq.answer}
-                    </div>
-                  )}
+  <div
+    style={{ padding: '14px 20px 18px', borderTop: '1px solid var(--gray-200)', background: 'white', fontSize: '0.88rem', color: 'var(--gray-700)', lineHeight: 1.7 }}
+    dangerouslySetInnerHTML={{ __html: faq.answer_richtext }}
+  />
+)}
                 </div>
               ))}
             </div>
