@@ -44,7 +44,6 @@ export default function ContactPage() {
     <div>
       <div className="page-header">
         <div className="container">
-          <div className="breadcrumb"><Link to="/">Home</Link> › Contact Us</div>
           <h1>Contact Us</h1>
           <p>Reach out to Andres A. Nocon National High School</p>
         </div>
