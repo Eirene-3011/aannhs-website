@@ -535,3 +535,109 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
   .nav-pulse-panel{right:-8px;width:262px;}
   .dash-updated{display:none;}
 }
+/* ============================================================
+   AANNHS HOMEPAGE MOBILE RESPONSIVE SAFEGUARDS
+   Preserves the existing blue/green dashboard design.
+   ============================================================ */
+.homepage, .homepage * { min-width: 0; }
+.homepage img, .homepage svg, .homepage canvas { max-width: 100%; }
+.homepage p, .homepage h1, .homepage h2, .homepage h3, .homepage h4,
+.homepage span, .homepage a, .homepage button { overflow-wrap: anywhere; }
+.homepage .section { padding-block: clamp(48px, 8vw, 80px); }
+.homepage .container { width: min(100%, 1240px); }
+.homepage .dash-card-header { gap: 12px; flex-wrap: wrap; }
+.homepage .dash-card-header > * { min-width: 0; }
+.homepage .btn { max-width: 100%; white-space: normal; }
+
+@media (max-width: 1024px) {
+  .homepage .container { padding-inline: 20px; }
+  .hero-split { grid-template-columns: minmax(280px, 42%) 1fr; }
+  .hero-panel { padding-inline: 36px; }
+  .quality-grid, .equity-grid { grid-template-columns: 1fr 1fr; }
+  .feature-grid { grid-template-columns: 1fr 1fr; }
+  .feature-grid > :first-child { grid-column: 1 / -1; }
+  .cta-split { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .homepage .container { padding-inline: 16px; }
+  .homepage .section { padding-block: 52px; }
+  .hero-split { grid-template-columns: 1fr; min-height: 0; }
+  .hero-panel { padding: 48px 24px; min-height: 430px; }
+  .hero-media { min-height: clamp(240px, 58vw, 360px); }
+  .hero-headline { font-size: clamp(1.75rem, 8vw, 2.5rem); }
+  .hero-panel-actions { width: 100%; }
+  .hero-panel-actions .btn { flex: 1 1 180px; }
+  .hero-nav-prev { left: 12px; }
+  .hero-nav-next { right: 12px; }
+  .hero-controls { right: 14px; bottom: 14px; gap: 9px; }
+
+  .dash-nav-bar { top: 0; }
+  .dash-nav-row { align-items: stretch; padding-block: 8px; }
+  .dash-nav-inner { overflow-x: auto; padding-bottom: 2px; }
+  .dash-nav-label { display: none; }
+  .dash-nav-right { border-left: 0; padding-left: 4px; }
+  .dash-updated { display: none; }
+
+  .dash-grid-2, .quality-grid, .wellbeing-grid, .hr-grid,
+  .cta-split { grid-template-columns: 1fr; }
+  .equity-grid { grid-template-columns: 1fr; }
+  .overview-hero-tile { grid-template-columns: 1fr; padding: 26px 24px; }
+  .ovw-sub-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .rate-cards { grid-template-columns: 1fr; }
+  .feature-grid { grid-template-columns: 1fr; grid-template-rows: none; }
+  .feature-grid > :first-child { grid-column: auto; }
+  .cta-split { min-height: 0; }
+  .cta-split-left, .cta-split-right { padding: 44px 26px; }
+
+  .donut-legend { min-width: 0; }
+  .h-bar-label { width: 40px; }
+  .h-bar-num { right: -18px; }
+  .directory-row { gap: 12px; }
+  .directory-code { width: 42px; height: 42px; }
+  .directory-icon-wrap { width: 34px; height: 34px; }
+  .nav-pulse-panel { right: -8px; max-width: min(262px, calc(100vw - 32px)); }
+}
+
+@media (max-width: 560px) {
+  .homepage .container { padding-inline: 14px; }
+  .homepage .section { padding-block: 44px; }
+  .sec-label { gap: 9px; margin-bottom: 28px; }
+  .sec-label-aside { width: 100%; margin-left: 0; align-self: flex-start; }
+  .sec-label-aside .btn { width: 100%; }
+  .btn, .btn-lg { width: 100%; padding-inline: 18px; }
+  .hero-panel { padding: 38px 18px; min-height: 400px; }
+  .hero-panel-actions .btn { flex-basis: 100%; }
+  .hero-media { min-height: 220px; }
+  .hero-controls { left: 14px; right: 14px; justify-content: space-between; }
+  .hero-nav { width: 38px; height: 38px; }
+
+  .dash-card { padding: 18px; }
+  .overview-hero-tile { padding: 22px 18px; }
+  .ovw-sub-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat-card-grid { grid-template-columns: 1fr 1fr; }
+  .gov-grid { grid-template-columns: 1fr 1fr; }
+  .acc-grid { grid-template-columns: 1fr 1fr; }
+  .directory-row { padding: 14px; }
+  .directory-arrow { display: none; }
+  .ppa-image-wrap, .ppa-card-feature .ppa-image-wrap { height: 190px; }
+  .cta-split-left, .cta-split-right { padding: 34px 20px; }
+  .npp-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 400px) {
+  .stat-card-grid, .gov-grid, .acc-grid, .ovw-sub-grid { grid-template-columns: 1fr; }
+  .hero-badge-row { gap: 6px; }
+  .hero-badge-pill { padding-inline: 10px; font-size: .66rem; }
+  .hero-media { min-height: 200px; }
+  .dash-card { padding: 16px; }
+  .kpi-value { font-size: 2rem; }
+  .directory-code { width: 38px; height: 38px; font-size: .72rem; }
+  .nav-pulse-panel { right: -4px; width: calc(100vw - 28px); }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .homepage .btn, .homepage .dash-nav-btn, .homepage .hero-nav,
+  .homepage .hero-toggle, .homepage .hero-dot { min-height: 44px; }
+  .homepage .hero-dot { min-height: 7px; }
+}
