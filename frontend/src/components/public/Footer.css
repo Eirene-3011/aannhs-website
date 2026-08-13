@@ -223,3 +223,58 @@
     text-align: center;
   }
 }
+/* ============================================================
+   MOBILE RESPONSIVE + LEFT ALIGNMENT OVERRIDES
+   Preserves the existing blue theme and desktop layout.
+   ============================================================ */
+.footer, .footer * { min-width: 0; box-sizing: border-box; }
+.footer img, .footer svg { max-width: 100%; height: auto; }
+.footer a, .footer p, .footer li, .footer h4 { overflow-wrap: anywhere; }
+
+@media (max-width: 992px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+  .footer-brand-col { align-items: flex-start; text-align: left; }
+  .footer-motto { margin-left: 0; margin-right: 0; }
+  .social-links { justify-content: flex-start; }
+}
+
+@media (max-width: 768px) {
+  .footer { padding-top: 32px; }
+  .footer-top { padding-bottom: 24px; }
+  .footer-grid { gap: 24px; }
+  .footer-info-grid { grid-template-columns: 1fr 1fr; gap: 22px; }
+  .footer-brand-col,
+  .footer-contact-section,
+  .footer-deped-section,
+  .footer-bottom-inner,
+  .footer-compliance { text-align: left; }
+  .footer-brand-col,
+  .social-links,
+  .contact-list,
+  .deped-links { align-items: flex-start; }
+  .contact-list li { justify-content: flex-start; text-align: left; }
+  .social-btn { min-height: 42px; }
+  .footer-bottom-inner { align-items: flex-start; }
+  .footer-compliance { justify-content: flex-start; }
+}
+
+@media (max-width: 600px) {
+  .footer-info-grid { grid-template-columns: 1fr; gap: 20px; }
+  .footer-contact-section,
+  .footer-deped-section { text-align: left; }
+  .contact-list { align-items: flex-start; }
+  .deped-links { align-items: flex-start; }
+  .deped-links a { min-height: 36px; display: inline-flex; align-items: center; }
+  .social-links { gap: 8px; }
+  .social-btn { padding: 8px 11px; font-size: .74rem; }
+  .footer-bottom-inner { flex-direction: column; align-items: flex-start; text-align: left; gap: 10px; }
+  .footer-compliance { justify-content: flex-start; text-align: left; }
+}
+
+@media (max-width: 420px) {
+  .social-links { width: 100%; }
+  .social-btn { width: 100%; justify-content: flex-start; }
+  .footer-school-name { font-size: .9rem; }
+  .footer-motto { font-size: .76rem; }
+  .footer-bottom p { font-size: .68rem; }
+}
