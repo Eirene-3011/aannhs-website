@@ -6,8 +6,59 @@ import { IconUsers, IconDownload } from '../../components/Icons';
 
 const PLACEHOLDER_AVATAR = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" fill="%23e5e7eb"/><circle cx="40" cy="30" r="16" fill="%239ca3af"/><ellipse cx="40" cy="62" rx="24" ry="16" fill="%239ca3af"/></svg>';
 
+// ------------------------------------------------------------
+// Canonical position order — President, VP, Secretary, Treasurer,
+// Auditor, P.I.O., Protocol Officer, Project Manager, Muse, Escort.
+// Anything matching "Grade X ..." (e.g. "Grade 7 Representative")
+// is placed after these, ordered by grade number.
+// Everything else falls to the very end, alphabetically.
+// ------------------------------------------------------------
+const ROLE_ORDER = [
+  'president',
+  'vice president',
+  'secretary',
+  'treasurer',
+  'auditor',
+  'public information officer',
+  'pio',
+  'protocol officer',
+  'project manager',
+  'muse',
+  'escort',
+  'member',
+];
+
+function normalizeRole(role) {
+  return (role || '')
+    .toLowerCase()
+    .replace(/[.\-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function roleRank(role) {
+  const norm = normalizeRole(role);
+  const idx = ROLE_ORDER.indexOf(norm);
+  if (idx !== -1) return idx;
+
+  const gradeMatch = norm.match(/grade\s*(\d+)/);
+  if (gradeMatch) return 100 + parseInt(gradeMatch[1], 10);
+
+  return 999; // unknown/unlisted roles go last
+}
+
+function sortMembersByRole(members) {
+  return [...(members || [])].sort((a, b) => {
+    const ra = roleRank(a.role);
+    const rb = roleRank(b.role);
+    if (ra !== rb) return ra - rb;
+    return (a.full_name || '').localeCompare(b.full_name || '');
+  });
+}
+
 // Group members by section_name, preserving order of first appearance.
 // Members with no section_name are collected into a single unlabeled group.
+// Within each group/section, members are then ordered by position.
 function groupMembersBySection(members) {
   const groups = [];
   const byKey = {};
@@ -19,6 +70,7 @@ function groupMembersBySection(members) {
     }
     byKey[key].members.push(m);
   });
+  groups.forEach(g => { g.members = sortMembersByRole(g.members); });
   return groups;
 }
 
