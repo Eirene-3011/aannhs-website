@@ -3,7 +3,7 @@ import api from '../../utils/api';
 import { toast } from 'react-toastify';
 import { getImageUrl } from '../../utils/helpers';
 
-const CATS = ['ARAL', 'KS1', 'KS2', 'Supplementary'];
+const CATS = ['ARAL', 'KS1', 'KS2', 'KS3', 'Supplementary'];
 const BLANK = { category: 'ARAL', title: '', description: '' };
 
 export default function AdminResources() {
