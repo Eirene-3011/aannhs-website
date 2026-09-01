@@ -55,6 +55,7 @@ router.put('/stats', authenticateAdmin, async (req, res) => {
     bmi_overweight,
     bmi_obese,
     bmi_wasted,
+    bmi_severely_wasted,
     health_assessment_done,
     child_protection_cases,
     // School Governance
@@ -104,6 +105,7 @@ router.put('/stats', authenticateAdmin, async (req, res) => {
     bmi_overweight: bmi_overweight || 0,
     bmi_obese: bmi_obese || 0,
     bmi_wasted: bmi_wasted || 0,
+    bmi_severely_wasted: bmi_severely_wasted || 0,
     health_assessment_done: health_assessment_done || 0,
     child_protection_cases: child_protection_cases || 0,
     sbm_level: sbm_level || '',
