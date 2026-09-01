@@ -153,6 +153,7 @@ const EMPTY_STATS = {
   learners_with_disabilities: 0, disadvantaged_learners: 0,
   // Well-Being
   bmi_normal: 0, bmi_overweight: 0, bmi_obese: 0, bmi_wasted: 0,
+  bmi_severely_wasted: 0,
   health_assessment_done: 0, child_protection_cases: 0,
   // Governance
   sbm_level: '', opcrf_rating: 0,
@@ -324,6 +325,7 @@ export default function AdminSchoolDashboard() {
                 <NumField label="Overweight" value={stats.bmi_overweight} onChange={set('bmi_overweight')} />
                 <NumField label="Obese" value={stats.bmi_obese} onChange={set('bmi_obese')} />
                 <NumField label="Wasted (Underweight)" value={stats.bmi_wasted} onChange={set('bmi_wasted')} />
+                <NumField label="Severely Wasted" value={stats.bmi_severely_wasted} onChange={set('bmi_severely_wasted')} hint="Severely underweight learners." />
               </div>
             </SectionCard>
             <SectionCard title="🏥 Health & Safety">
