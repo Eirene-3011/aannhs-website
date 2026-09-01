@@ -5,21 +5,17 @@ import { getImageUrl } from '../../utils/helpers';
 
 const LEVELS = [
   { key: 'grade7',  label: 'Grade 7'  },
-  { key: 'grade7',  label: 'Grade 7' },
-  { key: 'grade8',  label: 'Grade 8' },
-  { key: 'grade9',  label: 'Grade 9' },
+  { key: 'grade8',  label: 'Grade 8'  },
+  { key: 'grade9',  label: 'Grade 9'  },
   { key: 'grade10', label: 'Grade 10' },
 ];
 
 const BLANK = {
   school_year: '', sort_order: '',
-  grade7_male: '', grade7_female: '',
-  grade1_male: '', grade1_female: '',
-  grade2_male: '', grade2_female: '',
-  grade3_male: '', grade3_female: '',
-  grade4_male: '', grade4_female: '',
-  grade5_male: '', grade5_female: '',
-  grade6_male: '', grade6_female: '',
+  grade7_male: '',  grade7_female: '',
+  grade8_male: '',  grade8_female: '',
+  grade9_male: '',  grade9_female: '',
+  grade10_male: '', grade10_female: '',
   chart_image_url: '',
 };
 
