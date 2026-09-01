@@ -69,7 +69,7 @@ export default function CommitteesPage() {
       <div className="page-header">
         <div className="container">
           <h1>Committees &amp; Councils</h1>
-          <p>PTA, HPTA, SPTA, SSG/SPG and school governance bodies</p>
+          <p>PTA, HPTA, SPTA, SSLG and school governance bodies</p>
         </div>
       </div>
 
