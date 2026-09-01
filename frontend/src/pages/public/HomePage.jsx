@@ -413,7 +413,7 @@ export default function HomePage() {
     const totalAdmin = Number(s.administrative_staff) || 0;
     const totalVacant = Number(s.vacant_positions) || 0;
     const totalPersonnel = totalTeaching + totalNonTeaching + totalAdmin;
-    const bmiTotal = (Number(s.bmi_normal) || 0) + (Number(s.bmi_overweight) || 0) + (Number(s.bmi_obese) || 0) + (Number(s.bmi_wasted) || 0);
+    const bmiTotal = (Number(s.bmi_normal) || 0) + (Number(s.bmi_overweight) || 0) + (Number(s.bmi_obese) || 0) + (Number(s.bmi_wasted) || 0) + (Number(s.bmi_severely_wasted) || 0);
     const accItems = Object.keys(ACCOUNTABILITY_LABELS);
     const accCompleted = accItems.filter(k => s[k] === 'Completed').length;
 
@@ -447,6 +447,7 @@ export default function HomePage() {
     { name: 'Overweight', value: Number(s.bmi_overweight) || 0, color: '#D97706' },
     { name: 'Obese', value: Number(s.bmi_obese) || 0, color: '#DC2626' },
     { name: 'Wasted', value: Number(s.bmi_wasted) || 0, color: '#7C3AED' },
+    { name: 'Severely Wasted', value: Number(s.bmi_severely_wasted) || 0, color: '#991B1B' },
   ].filter(d => d.value > 0), [s]);
 
   const genderDonut = useMemo(() => [
@@ -832,6 +833,11 @@ export default function HomePage() {
                   <ActivityIcon className="wb-icon" />
                   <div className="wb-num">{Number(s.bmi_wasted) || 0}</div>
                   <div className="wb-label">Wasted</div>
+                </div>
+                <div className="wb-kpi-card wb-red">
+                  <AlertCircleIcon className="wb-icon" />
+                  <div className="wb-num">{Number(s.bmi_severely_wasted) || 0}</div>
+                  <div className="wb-label">Severely Wasted</div>
                 </div>
                 <div className="wb-kpi-card wb-blue">
                   <CheckCircleIcon className="wb-icon" />
