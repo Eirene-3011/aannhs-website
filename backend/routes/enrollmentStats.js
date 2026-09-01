@@ -6,19 +6,17 @@ const upload = require('../middleware/upload');
 
 const COLS = [
   'school_year', 'sort_order', 'chart_image_url',
-  'kinder_male', 'kinder_female',
-  'grade1_male', 'grade1_female',
-  'grade2_male', 'grade2_female',
-  'grade3_male', 'grade3_female',
-  'grade4_male', 'grade4_female',
-  'grade5_male', 'grade5_female',
-  'grade6_male', 'grade6_female',
+  'grade7_male', 'grade7_female',
+  'grade8_male', 'grade8_female',
+  'grade9_male', 'grade9_female',
+  'grade10_male', 'grade10_female',
 ];
 
+const LEVELS = ['grade7', 'grade8', 'grade9', 'grade10'];
+
 function totals(row) {
-  const levels = ['kinder','grade1','grade2','grade3','grade4','grade5','grade6'];
   let total_male = 0, total_female = 0;
-  levels.forEach(l => {
+  LEVELS.forEach(l => {
     total_male   += Number(row[`${l}_male`]   || 0);
     total_female += Number(row[`${l}_female`] || 0);
   });
@@ -50,20 +48,15 @@ router.post('/', authenticateAdmin, upload.single('chart_image'), async (req, re
     const [result] = await db.query(
       `INSERT INTO enrollment_stats
          (school_year, sort_order, chart_image_url,
-          kinder_male, kinder_female, grade1_male, grade1_female,
-          grade2_male, grade2_female, grade3_male, grade3_female,
-          grade4_male, grade4_female, grade5_male, grade5_female,
-          grade6_male, grade6_female)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          grade7_male, grade7_female, grade8_male, grade8_female,
+          grade9_male, grade9_female, grade10_male, grade10_female)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         b.school_year, b.sort_order || 0, chart_image_url,
-        b.kinder_male||0, b.kinder_female||0,
-        b.grade1_male||0, b.grade1_female||0,
-        b.grade2_male||0, b.grade2_female||0,
-        b.grade3_male||0, b.grade3_female||0,
-        b.grade4_male||0, b.grade4_female||0,
-        b.grade5_male||0, b.grade5_female||0,
-        b.grade6_male||0, b.grade6_female||0,
+        b.grade7_male || 0, b.grade7_female || 0,
+        b.grade8_male || 0, b.grade8_female || 0,
+        b.grade9_male || 0, b.grade9_female || 0,
+        b.grade10_male || 0, b.grade10_female || 0,
       ]
     );
     res.json({ id: result.insertId });
@@ -79,20 +72,15 @@ router.put('/:id', authenticateAdmin, upload.single('chart_image'), async (req, 
     await db.query(
       `UPDATE enrollment_stats SET
          school_year=?, sort_order=?, chart_image_url=?,
-         kinder_male=?, kinder_female=?, grade1_male=?, grade1_female=?,
-         grade2_male=?, grade2_female=?, grade3_male=?, grade3_female=?,
-         grade4_male=?, grade4_female=?, grade5_male=?, grade5_female=?,
-         grade6_male=?, grade6_female=?
+         grade7_male=?, grade7_female=?, grade8_male=?, grade8_female=?,
+         grade9_male=?, grade9_female=?, grade10_male=?, grade10_female=?
        WHERE id=?`,
       [
-        b.school_year, b.sort_order||0, chart_image_url,
-        b.kinder_male||0, b.kinder_female||0,
-        b.grade1_male||0, b.grade1_female||0,
-        b.grade2_male||0, b.grade2_female||0,
-        b.grade3_male||0, b.grade3_female||0,
-        b.grade4_male||0, b.grade4_female||0,
-        b.grade5_male||0, b.grade5_female||0,
-        b.grade6_male||0, b.grade6_female||0,
+        b.school_year, b.sort_order || 0, chart_image_url,
+        b.grade7_male || 0, b.grade7_female || 0,
+        b.grade8_male || 0, b.grade8_female || 0,
+        b.grade9_male || 0, b.grade9_female || 0,
+        b.grade10_male || 0, b.grade10_female || 0,
         req.params.id,
       ]
     );
