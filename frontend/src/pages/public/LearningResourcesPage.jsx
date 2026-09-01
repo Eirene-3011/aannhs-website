@@ -8,6 +8,7 @@ const CATS = [
   { key: 'ARAL', label: 'ARAL Program', Icon: IconBook },
   { key: 'KS1', label: 'Key Stage 1', Icon: IconAbc },
   { key: 'KS2', label: 'Key Stage 2', Icon: IconRuler },
+  { key: 'KS3', label: 'Key Stage 3', Icon: IconLibrary, subtitle: 'Grades 7 to 10 (Junior High School)' },
   { key: 'Supplementary', label: 'Supplementary', Icon: IconLibrary },
 ];
 
@@ -52,7 +53,7 @@ export default function LearningResourcesPage() {
         <div className="container">
           {/* Category filter tabs */}
           <div
-            style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}
+            style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}
             role="tablist"
             aria-label="Resource category"
           >
@@ -73,6 +74,13 @@ export default function LearningResourcesPage() {
               );
             })}
           </div>
+
+          {/* Optional subtitle for the active category (e.g. grade range) */}
+          {activeCat.subtitle && (
+            <p style={{ fontSize: '0.82rem', color: 'var(--gray-600, #666)', marginTop: 0, marginBottom: 16 }}>
+              {activeCat.subtitle}
+            </p>
+          )}
 
           {/* Search within active category */}
           {!loading && resources.length > 0 && (
